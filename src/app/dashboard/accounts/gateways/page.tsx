@@ -15,7 +15,11 @@ type Gateway = {
   id: number;
   name: string;
   proxy: string;
-  realm: string;
+  context: string;
+  status: string;
+  action: string;
+  state: string;
+  description: string;
   enabled: boolean;
 }
 
@@ -104,9 +108,13 @@ export default function GatewayPage() {
                 </TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Proxy</TableHead>
-                <TableHead>Realm</TableHead>
+                <TableHead>Context</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
+                <TableHead>State</TableHead>
+                <TableHead>Enabled</TableHead>
+                <TableHead>Decription</TableHead>
+                <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -131,7 +139,10 @@ export default function GatewayPage() {
                     </TableCell>
                     <TableCell>{gateway.name}</TableCell>
                     <TableCell>{gateway.proxy}</TableCell>
-                    <TableCell>{gateway.realm}</TableCell>
+                    <TableCell>{gateway.context}</TableCell>
+                    <TableCell>{gateway.status}</TableCell>
+                    <TableCell>{gateway.action}</TableCell>
+                    <TableCell>{gateway.state}</TableCell>
                     <TableCell>
                       {gateway.enabled ? (
                         <Check className="text-green-500" />
@@ -139,6 +150,7 @@ export default function GatewayPage() {
                         <X className="text-red-500" />
                       )}
                     </TableCell>
+                    <TableCell>{gateway.description}</TableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger>

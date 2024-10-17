@@ -1,74 +1,96 @@
-import { Button } from "@/components/ui/button"
+import { Button as ShadcnButton } from "@/components/ui/button"
 import { PlusCircle, Trash2 } from "lucide-react"
+
+type ButtonProps = React.ComponentProps<typeof ShadcnButton> & {
+  onClick: () => void;
+  children: React.ReactNode;
+}
+
+function CustomButton({ onClick, children, ...props }: ButtonProps) {
+  return (
+    <ShadcnButton onClick={onClick} {...props}>
+      {children}
+    </ShadcnButton>
+  )
+}
 
 export function AddButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button onClick={onClick} variant="outline" size="sm">
+    <CustomButton onClick={onClick}>
       <PlusCircle className="mr-2 h-4 w-4" />
       Add
-    </Button>
+    </CustomButton>
   )
 }
 
 export function DeleteButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button onClick={onClick} variant="outline" size="sm">
+    <CustomButton onClick={onClick} variant="outline">
       <Trash2 className="mr-2 h-4 w-4" />
       Delete
-    </Button>
+    </CustomButton>
   )
 }
 
 export function AddExtensionButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button onClick={onClick} variant="outline" size="sm">
+    <CustomButton onClick={onClick}>
       <PlusCircle className="mr-2 h-4 w-4" />
       Add Extension
-    </Button>
+    </CustomButton>
   )
 }
 
 export function DeleteExtensionButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button onClick={onClick} variant="outline" size="sm">
+    <CustomButton onClick={onClick} variant="outline">
       <Trash2 className="mr-2 h-4 w-4" />
       Delete Extension
-    </Button>
+    </CustomButton>
   )
 }
 
 export function AddBridgeButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button onClick={onClick} variant="outline" size="sm">
+    <CustomButton onClick={onClick}>
       <PlusCircle className="mr-2 h-4 w-4" />
       Add Bridge
-    </Button>
+    </CustomButton>
   )
 }
 
 export function DeleteBridgeButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button onClick={onClick} variant="outline" size="sm">
+    <CustomButton onClick={onClick} variant="outline">
       <Trash2 className="mr-2 h-4 w-4" />
       Delete Bridge
-    </Button>
+    </CustomButton>
   )
 }
 
 export function AddGatewayButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button onClick={onClick} variant="outline" size="sm">
+    <CustomButton onClick={onClick}>
       <PlusCircle className="mr-2 h-4 w-4" />
       Add Gateway
-    </Button>
+    </CustomButton>
   )
 }
 
 export function DeleteGatewayButton({ onClick }: { onClick: () => void }) {
   return (
-    <Button onClick={onClick} variant="outline" size="sm">
+    <CustomButton onClick={onClick} variant="outline">
       <Trash2 className="mr-2 h-4 w-4" />
       Delete Gateway
-    </Button>
+    </CustomButton>
+  )
+}
+
+export function AddAccessControlButton({ onClick }: { onClick: () => void }) {
+  return (
+    <CustomButton onClick={onClick}>
+      <PlusCircle className="mr-2 h-4 w-4" />
+      Add Access Control
+    </CustomButton>
   )
 }

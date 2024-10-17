@@ -7,7 +7,7 @@ import { ChevronRight } from 'lucide-react'
 // Add this helper function to check if a segment has its own page
 const hasOwnPage = (segment: string) => {
   // Add segments that don't have their own pages
-  const segmentsWithoutPages = ['settings', 'accounts']
+  const segmentsWithoutPages = ['settings', 'accounts', 'switch']
   return !segmentsWithoutPages.includes(segment)
 }
 

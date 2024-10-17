@@ -23,60 +23,43 @@ import { toast } from '@/hooks/use-toast'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Scroll } from 'lucide-react'
+import MediaCodecTable from '@/app/ui/media-codec-options'
 
 const formSchema = z.object({
   // General
-  extension: z.string().min(2).max(7),
-  numberAlias: z.string().optional(),
+  gateway: z.string().min(2).max(7),
+  username: z.string().optional(),
   domain: z.string(),
   password: z.string().min(6),
-  accountCode: z.string().optional(),
-  enabled: z.boolean(),
+  fromuser: z.string().optional(),
+  fromdomain: z.string().optional(),
   description: z.string().optional(),
 
-  // Caller ID
-  effectiveCallerIdName: z.string(),
-  effectiveCallerIdNumber: z.string(),
-  outboundCallerIdName: z.string(),
-  outboundCallerIdNumber: z.string(),
-  emergencyCallerIdName: z.string(),
-  emergencyCallerIdNumber: z.string(),
-  directoryFirstName: z.string(),
-  directoryFamilyName: z.string(),
-  directoryVisible: z.boolean(),
-  directoryExtensionVisible: z.boolean(),
-
-  // Call Routing
-  forwardAll: z.string().optional(),
-  forwardTo: z.string().optional(),
-  forward1: z.string().optional(),
-  forward2: z.string().optional(),
-  forward5: z.string().optional(),
-  forward6: z.string().optional(),
-
   // Additional
-  limitMax: z.string().optional(),
-  limitDestination: z.string().optional(),
-  missedCall: z.string().optional(),
-  tollAllow: z.string().optional(),
-  callTimeout: z.string(),
-  callGroup: z.string().optional(),
-  callScreen: z.boolean(),
-  record: z.enum(['local', 'inbound', 'outbound', 'all', 'none']),
-  holdMusic: z.string().optional(),
+  proxy: z.string().optional(),
+  realm: z.string().optional(),
+  expseconds: z.string().optional(),
+  retryseconds: z.string(),
+  register: z.boolean(),
   context: z.string().optional(),
+  profile: z.string().optional(),
+  enabled: z.boolean(),
 
   // Advanced
-  authAcl: z.string().optional(),
-  cidr: z.string().optional(),
-  sipForceContact: z.string().optional(),
-  sipForceExpires: z.string().optional(),
-  mwiAccount: z.string().optional(),
-  sipBypassMedia: z.string().optional(),
-  absoluteCodecString: z.string().optional(),
-  forcePing: z.string().optional(),
-  dialString: z.string().optional(),
+  distinct: z.enum(['True', 'False']),
+  authUser: z.string().optional(),
+  extension: z.string().optional(),
+  registerTransport: z.enum(['udp', 'tcp', 'tls']),
+  registerProxy: z.string().optional(),
+  outboundProxy: z.string().optional(),
+  callerIdFrom: z.enum(['True', 'False']),
+  supressCNG: z.enum(['True', 'False']),
+  sipCIDType: z.string().optional(),
+  codecPreference: z.string().optional(),
+  extensionInContact: z.enum(['True', 'False']),
+  ping: z.string().optional(),
+  channels: z.string().optional(),
+  hostname: z.string().optional(),
 })
 
 type Extension = {
@@ -84,7 +67,7 @@ type Extension = {
   extension: string;
 }
 
-export default function ExtensionSettingsPage() {
+export default function GatewaySettingsPage() {
   const params = useParams()
   const [extension, setExtension] = useState<string>(params.id as string)
   const [isLoading, setIsLoading] = useState(false)
@@ -95,10 +78,6 @@ export default function ExtensionSettingsPage() {
     defaultValues: {
       // Add default values here
       enabled: true,
-      directoryVisible: true,
-      directoryExtensionVisible: true,
-      callScreen: false,
-      record: 'none',
     },
   })
 
@@ -147,13 +126,13 @@ export default function ExtensionSettingsPage() {
 
   return (
     <div className="container mx-auto py-6">
-      <h1 className="text-sm font-semibold mb-6">{extension} - Extension Settings</h1>
+      <h1 className="text-sm font-semibold mb-6">lifesprint.com - Gateway Settings</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="flex">
             <nav className="w-64 pr-8">
               <ul className="space-y-2">
-                {['General', 'Caller ID', 'Call Routing', 'Additional', 'Advanced'].map((tab) => (
+                {['General', 'Additional', 'MediaCodecOptions', 'Advanced'].map((tab) => (
                   <li key={tab}>
                     <button
                       className={`w-full text-left py-2 px-4 rounded-md transition-colors ${
@@ -170,18 +149,19 @@ export default function ExtensionSettingsPage() {
               </ul>
             </nav>
               <div className="flex-1">
-                <Card className="">
-                <ScrollArea className="h-[500px]">
+                
+                <Card className="h-[600px]">
+                <ScrollArea className='h-[600px]'>
                   <CardContent>
                     <Tabs value={activeTab} className="w-full text-gray-600">
                     <TabsContent value="general">
                       <div className="space-y-4">
                         <FormField
                           control={form.control}
-                          name="extension"
+                          name="gateway"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Extension</FormLabel>
+                              <FormLabel className="">Gateway</FormLabel>
                               <FormControl>
                                <Input {...field} className="col-span-3" />
                               </FormControl>
@@ -190,24 +170,12 @@ export default function ExtensionSettingsPage() {
                         />
                         <FormField
                           control={form.control}
-                          name="numberAlias"
+                          name="username"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Number Alias</FormLabel>
+                              <FormLabel className="">Username</FormLabel>
                               <FormControl>
                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="domain"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Domain</FormLabel>
-                              <FormControl>
-                              <Input {...field} className="col-span-3" />
                               </FormControl>
                             </FormItem>
                           )}
@@ -224,29 +192,39 @@ export default function ExtensionSettingsPage() {
                             </FormItem>
                           )}
                         />
+
                         <FormField
                           control={form.control}
-                          name="accountCode"
+                          name="domain"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Account Code</FormLabel>
+                              <FormLabel className="">Domain</FormLabel>
                               <FormControl>
-                                <Input {...field} className="col-span-3" />
+                              <Input {...field} className="col-span-3" />
                               </FormControl>
                             </FormItem>
                           )}
                         />
                         <FormField
                           control={form.control}
-                          name="enabled"
+                          name="fromuser"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Enabled</FormLabel>
+                              <FormLabel className="">From User</FormLabel>
                               <FormControl>
-                                <Switch
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
+                              <Input {...field} className="col-span-3" />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                                                <FormField
+                          control={form.control}
+                          name="fromdomain"
+                          render={({ field }) => (
+                            <FormItem className="grid grid-cols-4 items-center gap-4">
+                              <FormLabel className="">From Domain</FormLabel>
+                              <FormControl>
+                              <Input {...field} className="col-span-3" />
                               </FormControl>
                             </FormItem>
                           )}
@@ -265,220 +243,14 @@ export default function ExtensionSettingsPage() {
                         />
                       </div>
                     </TabsContent>
-                    <TabsContent value="callerid">
-                      <div className="space-y-4">
-                        <FormField
-                          control={form.control}
-                          name="effectiveCallerIdName"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Effective Caller ID Name</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="effectiveCallerIdNumber"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="mb-2">Effective Caller ID Number</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="outboundCallerIdName"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Outbound Caller ID Name</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="outboundCallerIdNumber"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Outbound Caller ID Number</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="emergencyCallerIdName"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Emergency Caller ID Name</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="emergencyCallerIdNumber"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Emergency Caller ID Number</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="directoryFirstName"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Directory First Name</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="directoryFamilyName"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Directory Family Name</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="directoryVisible"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Directory Visible</FormLabel>
-                              <FormControl>
-                                <Switch
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="directoryExtensionVisible"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Directory Extension Visible</FormLabel>
-                              <FormControl>
-                                <Switch
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="callrouting">
-                      <div className="space-y-4">
-                        <FormField
-                          control={form.control}
-                          name="forwardAll"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Forward All</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="forwardTo"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Forward To</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="forward1"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Forward 1</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="forward2"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Forward 2</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="forward5"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Forward 5</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="forward6"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Forward 6</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </TabsContent>
                     <TabsContent value="additional">
                       <div className="space-y-4">
                         <FormField
                           control={form.control}
-                          name="limitMax"
+                          name="proxy"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Limit Max</FormLabel>
+                              <FormLabel className="">Proxy</FormLabel>
                               <FormControl>
                                 <Input {...field} className="col-span-3" />
                               </FormControl>
@@ -487,10 +259,10 @@ export default function ExtensionSettingsPage() {
                         />
                         <FormField
                           control={form.control}
-                          name="limitDestination"
+                          name="realm"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Limit Destination</FormLabel>
+                              <FormLabel className="">Realm</FormLabel>
                               <FormControl>
                                 <Input {...field} className="col-span-3" />
                               </FormControl>
@@ -499,58 +271,22 @@ export default function ExtensionSettingsPage() {
                         />
                         <FormField
                           control={form.control}
-                          name="missedCall"
+                          name="expseconds"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Missed Call</FormLabel>
+                              <FormLabel className="">Expire Seconds</FormLabel>
                               <FormControl>
                                 <Input {...field} className="col-span-3" />
                               </FormControl>
                             </FormItem>
                           )}
                         />
-                        <FormField
+                                                <FormField
                           control={form.control}
-                          name="tollAllow"
+                          name="register"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Toll Allow</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="callTimeout"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Call Timeout</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="callGroup"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Call Group</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="callScreen"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Call Screen</FormLabel>
+                              <FormLabel className="">Register</FormLabel>
                               <FormControl>
                                 <Switch
                                   checked={field.value}
@@ -562,33 +298,10 @@ export default function ExtensionSettingsPage() {
                         />
                         <FormField
                           control={form.control}
-                          name="record"
+                          name="retryseconds"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Record</FormLabel>
-                              <FormControl>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select recording option" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="local">Local</SelectItem>
-                                    <SelectItem value="inbound">Inbound</SelectItem>
-                                    <SelectItem value="outbound">Outbound</SelectItem>
-                                    <SelectItem value="all">All</SelectItem>
-                                    <SelectItem value="none">None</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="holdMusic"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Hold Music</FormLabel>
+                              <FormLabel className="">Retry Seconds</FormLabel>
                               <FormControl>
                                 <Input {...field} className="col-span-3" />
                               </FormControl>
@@ -607,16 +320,68 @@ export default function ExtensionSettingsPage() {
                             </FormItem>
                           )}
                         />
+                        <FormField
+                          control={form.control}
+                          name="profile"
+                          render={({ field }) => (
+                            <FormItem className="grid grid-cols-4 items-center gap-4">
+                              <FormLabel className="">Profile</FormLabel>
+                              <FormControl>
+                                <Input {...field} className="col-span-3" />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                                                <FormField
+                          control={form.control}
+                          name="enabled"
+                          render={({ field }) => (
+                            <FormItem className="grid grid-cols-4 items-center gap-4">
+                              <FormLabel className="">Enabled</FormLabel>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
                       </div>
+                    </TabsContent>
+                    <TabsContent value="mediacodecoptions">
+                     <div className="space-y-4">
+                      <MediaCodecTable />
+                       </div>
                     </TabsContent>
                     <TabsContent value="advanced">
                       <div className="space-y-4">
-                        <FormField
+                      <FormField
                           control={form.control}
-                          name="authAcl"
+                          name="distinct"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Auth ACL</FormLabel>
+                              <FormLabel className="">Distinct To</FormLabel>
+                              <FormControl>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select recording option" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="true">True</SelectItem>
+                                    <SelectItem value="false">False</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="authUser"
+                          render={({ field }) => (
+                            <FormItem className="grid grid-cols-4 items-center gap-4">
+                              <FormLabel className="">Auth Username</FormLabel>
                               <FormControl>
                                 <Input {...field} className="col-span-3" />
                               </FormControl>
@@ -625,10 +390,10 @@ export default function ExtensionSettingsPage() {
                         />
                         <FormField
                           control={form.control}
-                          name="cidr"
+                          name="extension"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">CIDR</FormLabel>
+                              <FormLabel className="">Extension</FormLabel>
                               <FormControl>
                                 <Input {...field} className="col-span-3" />
                               </FormControl>
@@ -637,10 +402,31 @@ export default function ExtensionSettingsPage() {
                         />
                         <FormField
                           control={form.control}
-                          name="sipForceContact"
+                          name="registerTransport"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">SIP Force Contact</FormLabel>
+                              <FormLabel className="">Register Transport</FormLabel>
+                              <FormControl>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select recording option" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="udp">udp</SelectItem>
+                                    <SelectItem value="tcp">tcp</SelectItem>
+                                    <SelectItem value="tls">tls</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="registerProxy"
+                          render={({ field }) => (
+                            <FormItem className="grid grid-cols-4 items-center gap-4">
+                              <FormLabel className="">Register Proxy</FormLabel>
                               <FormControl>
                                 <Input {...field} className="col-span-3" />
                               </FormControl>
@@ -649,10 +435,10 @@ export default function ExtensionSettingsPage() {
                         />
                         <FormField
                           control={form.control}
-                          name="sipForceExpires"
+                          name="outboundProxy"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">SIP Force Expires</FormLabel>
+                              <FormLabel className="">Outbound Proxy</FormLabel>
                               <FormControl>
                                 <Input {...field} className="col-span-3" />
                               </FormControl>
@@ -661,10 +447,50 @@ export default function ExtensionSettingsPage() {
                         />
                         <FormField
                           control={form.control}
-                          name="mwiAccount"
+                          name="callerIdFrom"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">MWI Account</FormLabel>
+                              <FormLabel className="">Caller ID In From</FormLabel>
+                              <FormControl>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select recording option" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="true">True</SelectItem>
+                                    <SelectItem value="false">False</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="supressCNG"
+                          render={({ field }) => (
+                            <FormItem className="grid grid-cols-4 items-center gap-4">
+                              <FormLabel className="">Supress CNG</FormLabel>
+                              <FormControl>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select recording option" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="true">True</SelectItem>
+                                    <SelectItem value="false">False</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="sipCIDType"
+                          render={({ field }) => (
+                            <FormItem className="grid grid-cols-4 items-center gap-4">
+                              <FormLabel className="">SIP CID Type</FormLabel>
                               <FormControl>
                                 <Input {...field} className="col-span-3" />
                               </FormControl>
@@ -673,10 +499,30 @@ export default function ExtensionSettingsPage() {
                         />
                         <FormField
                           control={form.control}
-                          name="sipBypassMedia"
+                          name="extensionInContact"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">SIP Bypass Media</FormLabel>
+                              <FormLabel className="">Extension In Contact</FormLabel>
+                              <FormControl>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select recording option" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="true">True</SelectItem>
+                                    <SelectItem value="false">False</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="ping"
+                          render={({ field }) => (
+                            <FormItem className="grid grid-cols-4 items-center gap-4">
+                              <FormLabel className="">Ping</FormLabel>
                               <FormControl>
                                 <Input {...field} className="col-span-3" />
                               </FormControl>
@@ -685,10 +531,10 @@ export default function ExtensionSettingsPage() {
                         />
                         <FormField
                           control={form.control}
-                          name="absoluteCodecString"
+                          name="channels"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Absolute Codec String</FormLabel>
+                              <FormLabel className="">Channels</FormLabel>
                               <FormControl>
                                 <Input {...field} className="col-span-3" />
                               </FormControl>
@@ -697,22 +543,10 @@ export default function ExtensionSettingsPage() {
                         />
                         <FormField
                           control={form.control}
-                          name="forcePing"
+                          name="hostname"
                           render={({ field }) => (
                             <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Force Ping</FormLabel>
-                              <FormControl>
-                                <Input {...field} className="col-span-3" />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="dialString"
-                          render={({ field }) => (
-                            <FormItem className="grid grid-cols-4 items-center gap-4">
-                              <FormLabel className="">Dial String</FormLabel>
+                              <FormLabel className="">Hostname</FormLabel>
                               <FormControl>
                                 <Input {...field} className="col-span-3" />
                               </FormControl>

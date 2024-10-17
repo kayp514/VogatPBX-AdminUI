@@ -46,8 +46,11 @@ const navigation: NavItem[] = [
     icon: SwitchCamera, 
     hasSubmenu: true,
     submenu: [
-      { name: 'Calls', href: '/dashboard/switch/calls' },
-      { name: 'Voicemail', href: '/dashboard/switch/voicemail' },
+      { name: 'Access Controls', href: '/dashboard/switch/accesscontrols' },
+      { name: 'Email Templates', href: '/dashboard/switch/emailtemplates' },
+      { name: 'Modules', href: '/dashboard/switch/modules' },
+      { name: 'Sip Profiles', href: '/dashboard/switch/profiles' },
+      { name: 'Variables', href: '/dashboard/switch/variables' },
     ]
   },
   { 
@@ -57,6 +60,7 @@ const navigation: NavItem[] = [
     submenu: [
       { name: 'Domain', href: '/dashboard/settings/domains' },
       { name: 'Devices', href: '/dashboard/settings/devices' },
+      { name: 'Menu manage', href: '/dashboard/settings/menus' },
     ]
   },
   {
