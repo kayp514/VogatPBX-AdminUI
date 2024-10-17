@@ -37,3 +37,25 @@ model Extension {
 
   @@map("pbx_extensions")
 }
+
+model EmailTemplate {
+  id          String  @id @default(uuid())
+  language    String
+  category    String
+  subcategory String
+  enabled     String
+  description String?
+
+  @@map("pbx_email_templates")
+}
+
+model Gateway {
+  id          String  @id @default(uuid())
+  gateway     String
+  proxy       String
+  context     String
+  enabled     String
+  description String?
+
+  @@map("pbx_gateways")
+}
