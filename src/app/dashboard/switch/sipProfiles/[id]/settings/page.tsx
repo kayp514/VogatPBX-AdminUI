@@ -279,7 +279,9 @@ export default function SipProfileSettingsPage() {
   return (
     <div className="container mx-auto py-6">
       <div className="mb-6 flex justify-between items-center">
-      <h1 className="text-2xl font-semibold">{isLoading ? <Skeleton className="h-8 w-48" /> : `${profileData?.name || 'Unknown'} Profile`}</h1>
+      <h1 className="text-2xl font-semibold">
+        {isLoading ? <Skeleton className="h-8 w-48" /> : `${profileData?.name || 'Unknown'} Profile`}
+        </h1>
         <div className="space-x-2">
           <SaveButton onClick={handleSave} />
         </div>
@@ -291,12 +293,12 @@ export default function SipProfileSettingsPage() {
               <>
                 <div className="space-y-3 mb-4">
                   <div className="flex items-center">
-                    <Label htmlFor="name" className="w-24 text-sm font-medium">Name</Label>
-                    <Skeleton className="h-7 w-full" />
+                  <Skeleton className="w-24 h-5" />
+                  <Skeleton className="h-7 w-full ml-2" />
                   </div>
                   <div className="flex items-center">
-                    <Label htmlFor="description" className="w-24 text-sm font-medium">Description</Label>
-                    <Skeleton className="h-7 w-full" />
+                  <Skeleton className="w-24 h-5" />
+                  <Skeleton className="h-7 w-full ml-2" />
                   </div>
                 </div>
               </>
@@ -335,15 +337,27 @@ export default function SipProfileSettingsPage() {
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
+                    {isLoading ? (
+                        <>
+                        <TableHead><Skeleton className="h-5 w-16" /></TableHead>
+                        <TableHead><Skeleton className="h-5 w-16" /></TableHead>
+                        <TableHead><Skeleton className="h-5 w-16" /></TableHead>
+                        <TableHead className="w-[60px]"></TableHead>
+                        </>
+                    ) : (
+                     <>
                   <TableHead className="text-xs font-medium">Name</TableHead>
                   <TableHead className="text-xs font-medium">Alias</TableHead>
                   <TableHead className="text-xs font-medium">Parse</TableHead>
                   <TableHead className="w-[60px]"></TableHead>
+                  </>)
+                    }
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
                     <>
+                    <SipDomainSkeleton />
                     <SipDomainSkeleton />
                     <SipDomainSkeleton />
                     </>
@@ -406,11 +420,24 @@ export default function SipProfileSettingsPage() {
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
+                    {isLoading ? (
+                        <>
+                    <TableHead><Skeleton className="h-5 w-16" /></TableHead>
+                    <TableHead><Skeleton className="h-5 w-16" /></TableHead>
+                    <TableHead><Skeleton className="h-5 w-16" /></TableHead>
+                    <TableHead><Skeleton className="h-5 w-16" /></TableHead>
+                    <TableHead className="w-[60px]"></TableHead>
+                    </>
+                    ) : (
+                      <>
                   <TableHead className="text-xs font-medium">Name</TableHead>
                   <TableHead className="text-xs font-medium">Value</TableHead>
                   <TableHead className="text-xs font-medium">Enabled</TableHead>
                   <TableHead className="text-xs font-medium">Description</TableHead>
                   <TableHead className="w-[60px]"></TableHead>
+                  </>
+                    )
+                }
                 </TableRow>
               </TableHeader>
               <TableBody>

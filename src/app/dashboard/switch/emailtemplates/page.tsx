@@ -11,6 +11,9 @@ import { toast } from '@/hooks/use-toast'
 import { Card, CardContent } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Check, X, AlertCircle } from 'lucide-react'
+import { VariablesPageSkeleton } from '@/app/ui/skeleton'
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 type EmailTemplate = {
   id: string;
@@ -65,6 +68,28 @@ export default function EmailTemplatePage() {
       prevTemplates.map(template =>
         template.id === id ? { ...template, enabled: !template.enabled } : template
       )
+    )
+  }
+
+  if (isLoading) {
+    return <VariablesPageSkeleton />
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto py-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+        <Button 
+          className="mt-4" 
+          onClick={() => window.location.reload()}
+        >
+          Retry
+        </Button>
+      </div>
     )
   }
 

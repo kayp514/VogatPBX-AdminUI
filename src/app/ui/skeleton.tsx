@@ -1,5 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { TableCell, TableRow } from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Card, CardContent } from "@/components/ui/card"
 
 export function BridgeSkeleton() {
   return (
@@ -133,5 +134,52 @@ export function SipSettingSkeleton (){
     <TableCell className="py-2"><Skeleton className="h-7 w-7" /></TableCell>
   </TableRow>
 
+  )
+}
+
+export function VariablesPageSkeleton() {
+  return (
+    <div className="container mx-auto py-6">
+      <Skeleton className="h-8 w-64 mb-6" />
+      <div className="flex">
+        <nav className="w-64 pr-8">
+          <ul className="space-y-2">
+            {[...Array(5)].map((_, i) => (
+              <li key={i}>
+                <Skeleton className="h-10 w-full" />
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <div className="flex-1">
+          <Card>
+            <CardContent className="p-6">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    {['Name', 'Value', 'Hostname', 'Enabled', 'Description'].map((header) => (
+                      <TableHead key={header}>
+                        <Skeleton className="h-6 w-full" />
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {[...Array(5)].map((_, i) => (
+                    <TableRow key={i}>
+                      {[...Array(5)].map((_, j) => (
+                        <TableCell key={j}>
+                          <Skeleton className="h-6 w-full" />
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
   )
 }
