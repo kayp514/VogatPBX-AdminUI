@@ -1,15 +1,12 @@
 import { NextResponse } from 'next/server'
-import { fetchExtensions } from '@/lib/extensionService'
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    const extensions = await fetchExtensions()
-    return NextResponse.json(extensions)
+    const extensions = await prisma.pbx_extensions.findMany();
+    return NextResponse.json(extensions);
   } catch (error) {
-    console.error('Error in GET /api/extensions:', error)
-    return NextResponse.json(
-      { error: 'An error occurred while fetching extensions' },
-      { status: 500 }
-    )
+    console.error('Error fetching extensions:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

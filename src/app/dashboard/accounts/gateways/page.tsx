@@ -13,14 +13,14 @@ import { Check, X } from "lucide-react"
 
 type Gateway = {
   id: number;
-  name: string;
+  gateway: string;
   proxy: string;
   context: string;
   status: string;
   action: string;
   state: string;
   description: string;
-  enabled: boolean;
+  enabled: string;
 }
 
 export default function GatewayPage() {
@@ -33,7 +33,7 @@ export default function GatewayPage() {
   useEffect(() => {
     async function fetchGateways() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/v1/gateways/')
+        const response = await fetch('/api/gateways')
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
@@ -137,7 +137,7 @@ export default function GatewayPage() {
                         onCheckedChange={() => toggleGateway(gateway.id)}
                       />
                     </TableCell>
-                    <TableCell>{gateway.name}</TableCell>
+                    <TableCell>{gateway.gateway}</TableCell>
                     <TableCell>{gateway.proxy}</TableCell>
                     <TableCell>{gateway.context}</TableCell>
                     <TableCell>{gateway.status}</TableCell>

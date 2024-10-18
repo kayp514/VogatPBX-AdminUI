@@ -183,7 +183,7 @@ export default function ExtensionSettingsPage() {
                             <FormItem className="grid grid-cols-4 items-center gap-4">
                               <FormLabel className="">Extension</FormLabel>
                               <FormControl>
-                               <Input {...field} className="col-span-3" />
+                               <Input {...field} className="col-span-3" value={extension} />
                               </FormControl>
                             </FormItem>
                           )}

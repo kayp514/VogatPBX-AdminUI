@@ -87,7 +87,7 @@ export default function DomainPage() {
   return (
     <div className="container mx-auto py-10">
       <div className="mb-6 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Domains</h1>
+        <h1 className="text-2xl font-semibold">Domains</h1>
         <div className="space-x-2">
           <DeleteButton onClick={handleDelete} />
           <AddButton onClick={handleAdd} />

@@ -94,3 +94,13 @@ export function AddAccessControlButton({ onClick }: { onClick: () => void }) {
     </CustomButton>
   )
 }
+
+
+export function SaveButton({ onClick }: { onClick: () => void }) {
+  return (
+    <CustomButton onClick={onClick}>
+      <PlusCircle className="mr-2 h-4 w-4" />
+      Save
+    </CustomButton>
+  )
+}

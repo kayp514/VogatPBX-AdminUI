@@ -49,7 +49,7 @@ const navigation: NavItem[] = [
       { name: 'Access Controls', href: '/dashboard/switch/accesscontrols' },
       { name: 'Email Templates', href: '/dashboard/switch/emailtemplates' },
       { name: 'Modules', href: '/dashboard/switch/modules' },
-      { name: 'Sip Profiles', href: '/dashboard/switch/profiles' },
+      { name: 'Sip Profiles', href: '/dashboard/switch/sipProfiles' },
       { name: 'Variables', href: '/dashboard/switch/variables' },
     ]
   },
@@ -64,7 +64,7 @@ const navigation: NavItem[] = [
     ]
   },
   {
-    name: 'Users and Authorization',
+    name: 'Authentication',
     icon: Shield,
     hasSubmenu: true,
     submenu: [
@@ -122,16 +122,15 @@ export default function Sidebar() {
             {navigation.map((item) => (
               <div key={item.name}>
                 {item.hasSubmenu ? (
-                  <Button
-                    variant="ghost"
-                    className={cn(
-                      "w-full justify-between text-left font-normal",
-                      expandedItems.includes(item.name) && "bg-gray-100 dark:bg-gray-700 font-medium"
-                    )}
-                    onClick={() => toggleExpand(item.name)}
-                  >
+                  <button
+                  className={cn(
+                    "w-full flex items-center justify-between px-4 py-2 text-sm font-semibold rounded-md",
+                    expandedItems.includes(item.name) ? "text-purple-600 bg-purple-50" : "text-gray-600 hover:bg-gray-50 hover:text-purple-600"
+                  )}
+                  onClick={() => toggleExpand(item.name)}
+                >
                     <span className="flex items-center">
-                      <item.icon className="mr-2 h-4 w-4" />
+                      <item.icon className="mr-4 h-4 w-4" />
                       {item.name}
                     </span>
                     {expandedItems.includes(item.name) ? (
@@ -139,34 +138,32 @@ export default function Sidebar() {
                     ) : (
                       <ChevronRight className="h-4 w-4" />
                     )}
-                  </Button>
+                  </button>
                 ) : item.href ? (
                   <Link href={item.href} passHref>
-                    <Button
-                      variant="ghost"
+                    <div
                       className={cn(
-                        "w-full justify-start text-left font-normal",
-                        pathname === item.href && "bg-gray-100 dark:bg-gray-700 font-medium"
+                        "flex items-center px-4 py-2 text-sm font-semibold rounded-md",
+                        pathname === item.href ? "text-purple-600 bg-purple-50" : "text-gray-600 hover:bg-gray-50 hover:text-purple-600"
                       )}
                     >
-                      <item.icon className="mr-2 h-4 w-4" />
+                      <item.icon className="mr-3 h-5 w-5" />
                       {item.name}
-                    </Button>
+                    </div>
                   </Link>
                 ) : null}
                 {item.hasSubmenu && expandedItems.includes(item.name) && (
                   <div className="ml-4 mt-2 space-y-1">
                     {item.submenu?.map((subItem) => (
                       <Link key={subItem.name} href={subItem.href} passHref>
-                        <Button
-                          variant="ghost"
+                        <div
                           className={cn(
-                            "w-full justify-start text-left font-normal",
-                            pathname === subItem.href && "bg-gray-100 dark:bg-gray-700 font-medium"
+                            "flex items-center px-4 py-2 text-sm font-medium rounded-md",
+                            pathname === subItem.href ? "text-purple-600 bg-purple-50" : "text-gray-600 hover:bg-gray-50 hover:text-purple-600"
                           )}
                         >
                           {subItem.name}
-                        </Button>
+                        </div>
                       </Link>
                     ))}
                   </div>

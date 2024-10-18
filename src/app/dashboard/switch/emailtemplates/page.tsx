@@ -23,65 +23,26 @@ type EmailTemplate = {
   description: string;
 }
 
-const mockTemplates: EmailTemplate[] = [
-  {
-    id: '1',
-    language: 'en-us',
-    category: 'Account',
-    subcategory: 'Welcome',
-    subject: 'Welcome to Our Service',
-    type: 'html',
-    enabled: true,
-    description: 'Welcome email for new users'
-  },
-  {
-    id: '2',
-    language: 'en-us',
-    category: 'Billing',
-    subcategory: 'Invoice',
-    subject: 'Your Monthly Invoice',
-    type: 'text',
-    enabled: true,
-    description: 'Monthly invoice email'
-  },
-  {
-    id: '3',
-    language: 'en-gb',
-    category: 'Support',
-    subcategory: 'Ticket',
-    subject: 'Your Support Ticket',
-    type: 'html',
-    enabled: true,
-    description: 'Support ticket confirmation email'
-  },
-  {
-    id: '4',
-    language: 'en-gb',
-    category: 'Marketing',
-    subcategory: 'Newsletter',
-    subject: 'Latest Updates from Us',
-    type: 'html',
-    enabled: false,
-    description: 'Monthly newsletter email'
-  },
-]
-
 export default function EmailTemplatePage() {
-  const [templates, setTemplates] = useState<EmailTemplate[]>(mockTemplates)
+  const [templates, setTemplates] = useState<EmailTemplate[]>([])
   const [activeLanguage, setActiveLanguage] = useState('en-us')
-  const [isLoading, setIsLoading] = useState(false)
-
-  const languages = Array.from(new Set(mockTemplates.map(template => template.language)))
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchTemplates() {
       setIsLoading(true)
+      setError(null)
       try {
-        // In a real application, you would fetch the templates from an API
-        // For now, we'll use the mock data
-        setTemplates(mockTemplates)
+        const response = await fetch('/api/emailTemplates')
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        setTemplates(data)
       } catch (error) {
         console.error('Error fetching templates:', error)
+        setError('Failed to load email templates. Please try again.')
         toast({
           title: 'Error',
           description: 'Failed to load email templates. Please try again.',
@@ -94,6 +55,8 @@ export default function EmailTemplatePage() {
 
     fetchTemplates()
   }, [])
+
+  const languages = Array.from(new Set(templates.map(template => template.language)))
 
   const filteredTemplates = templates.filter(template => template.language === activeLanguage)
 

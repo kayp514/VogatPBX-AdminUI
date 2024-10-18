@@ -99,3 +99,39 @@ export function UserSkeleton() {
     </TableRow>
   )
 }
+
+export function SipProfilesSkeleton() {
+  return (
+    <TableRow>
+      <TableCell><Skeleton className="h-4 w-4" /></TableCell>
+      <TableCell><Skeleton className="h-4 w-[150px]" /></TableCell>
+      <TableCell><Skeleton className="h-4 w-[200px]" /></TableCell>
+      <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+      <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+    </TableRow>
+  )
+}
+
+export function SipDomainSkeleton() {
+  return(
+  <TableRow>
+    <TableCell className="py-2 w-1/4"><Skeleton className="h-7 w-full" /></TableCell>
+    <TableCell className="py-2"><Skeleton className="h-6 w-10" /></TableCell>
+    <TableCell className="py-2"><Skeleton className="h-6 w-10" /></TableCell>
+    <TableCell className="py-2"><Skeleton className="h-7 w-7" /></TableCell>
+  </TableRow>
+  )
+}
+
+export function SipSettingSkeleton (){
+  return(
+  <TableRow>
+    <TableCell className="py-2 w-1/4"><Skeleton className="h-7 w-full" /></TableCell>
+    <TableCell className="py-2"><Skeleton className="h-7 w-full" /></TableCell>
+    <TableCell className="py-2"><Skeleton className="h-6 w-10" /></TableCell>
+    <TableCell className="py-2"><Skeleton className="h-7 w-full" /></TableCell>
+    <TableCell className="py-2"><Skeleton className="h-7 w-7" /></TableCell>
+  </TableRow>
+
+  )
+}
