@@ -73,7 +73,7 @@ export default function GatewayPage() {
 
   const handlePreferences = (id: number) => {
     console.log(`Open preferences for gateway with id: ${id}`)
-    // Implement preferences logic here
+    router.push(`/dashboard/accounts/gateways/${id}/settings`)
   }
 
   const handleToggleEnable = (id: number) => {
