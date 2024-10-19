@@ -1,178 +1,249 @@
 "use client"
 
-import React from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import * as React from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import {
-  Home,
-  Users,
-  SwitchCamera,
-  Settings,
   Activity,
-  ChevronDown,
-  ChevronRight,
-  Shield,
   Bell,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Home,
+  LogOut,
+  Moon,
+  Settings,
+  Shield,
   Sun,
-  Moon
+  SwitchCamera,
+  Users,
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Switch } from "@/components/ui/switch"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 type NavItem = {
-  name: string;
-  href?: string;
-  icon: React.ElementType;
-  hasSubmenu?: boolean;
-  submenu?: { name: string; href: string }[];
+  name: string
+  href?: string
+  icon: React.ElementType
+  hasSubmenu?: boolean
+  submenu?: { name: string; href: string }[]
 }
 
 const navigation: NavItem[] = [
-  { name: 'Dashboard', href: '/dashboard', icon: Home },
-  { 
-    name: 'Accounts', 
-    icon: Users, 
+  { name: "Dashboard", href: "/dashboard", icon: Home },
+  {
+    name: "Accounts",
+    icon: Users,
     hasSubmenu: true,
     submenu: [
-      { name: 'Bridge', href: '/dashboard/accounts/bridge' },
-      { name: 'Extensions', href: '/dashboard/accounts/extensions' },
-      { name: 'Gateway', href: '/dashboard/accounts/gateways' },
-    ]
-  },
-  { 
-    name: 'Switch', 
-    icon: SwitchCamera, 
-    hasSubmenu: true,
-    submenu: [
-      { name: 'Access Controls', href: '/dashboard/switch/accesscontrols' },
-      { name: 'Email Templates', href: '/dashboard/switch/emailtemplates' },
-      { name: 'Modules', href: '/dashboard/switch/modules' },
-      { name: 'Sip Profiles', href: '/dashboard/switch/sipProfiles' },
-      { name: 'Variables', href: '/dashboard/switch/variables' },
-    ]
-  },
-  { 
-    name: 'Settings', 
-    icon: Settings, 
-    hasSubmenu: true,
-    submenu: [
-      { name: 'Domain', href: '/dashboard/settings/domains' },
-      { name: 'Devices', href: '/dashboard/settings/devices' },
-      { name: 'Menu manage', href: '/dashboard/settings/menus' },
-    ]
+      { name: "Bridge", href: "/dashboard/accounts/bridge" },
+      { name: "Extensions", href: "/dashboard/accounts/extensions" },
+      { name: "Gateway", href: "/dashboard/accounts/gateways" },
+    ],
   },
   {
-    name: 'Authentication',
+    name: "Switch",
+    icon: SwitchCamera,
+    hasSubmenu: true,
+    submenu: [
+      { name: "Access Controls", href: "/dashboard/switch/accesscontrols" },
+      { name: "Email Templates", href: "/dashboard/switch/emailtemplates" },
+      { name: "Modules", href: "/dashboard/switch/modules" },
+      { name: "Sip Profiles", href: "/dashboard/switch/sipProfiles" },
+      { name: "Variables", href: "/dashboard/switch/variables" },
+    ],
+  },
+  {
+    name: "Settings",
+    icon: Settings,
+    hasSubmenu: true,
+    submenu: [
+      { name: "Domain", href: "/dashboard/settings/domains" },
+      { name: "Devices", href: "/dashboard/settings/devices" },
+      { name: "Menu manage", href: "/dashboard/settings/menus" },
+    ],
+  },
+  {
+    name: "Authentication",
     icon: Shield,
     hasSubmenu: true,
     submenu: [
-      { name: 'Permissions', href: '/dashboard/users-and-auth/permissions' },
-      { name: 'Groups', href: '/dashboard/users-and-auth/groups' },
-      { name: 'Users', href: '/dashboard/users-and-auth/users' },
-    ]
+      { name: "Permissions", href: "/dashboard/users-and-auth/permissions" },
+      { name: "Groups", href: "/dashboard/users-and-auth/groups" },
+      { name: "Users", href: "/dashboard/users-and-auth/users" },
+    ],
   },
-  { name: 'Monitoring', href: '/dashboard/monitoring', icon: Activity },
+  { name: "Monitoring", href: "/dashboard/monitoring", icon: Activity },
 ]
 
-export default function Sidebar() {
-  const [expandedItems, setExpandedItems] = React.useState<string[]>([])
+export function SidebarComponent() {
   const [isDarkMode, setIsDarkMode] = React.useState(false)
+  const [isCollapsed, setIsCollapsed] = React.useState(false)
   const pathname = usePathname()
-
-  const toggleExpand = (name: string) => {
-    setExpandedItems(prev =>
-      prev.includes(name) ? prev.filter(item => item !== name) : [...prev, name]
-    )
-  }
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode)
     // Implement actual dark mode toggle logic here
   }
 
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed)
+  }
+
   return (
-    <div className="flex flex-col h-screen">
-      {/* Fixed Header */}
-      <header className="fixed top-0 left-0 right-0 h-16 bg-white dark:bg-gray-800 shadow-sm z-10 flex items-center justify-between px-4">
-        <h1 className="text-xl font-bold">Vogat PBX</h1>
-        <div className="flex items-center space-x-4">
+  <TooltipProvider>
+    <div className={cn(
+      "flex flex-col h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700",
+      isCollapsed ? "w-16" : "w-64"
+    )}>
+      <div className="flex items-center h-16 px-4 border-b border-gray-200 dark:border-gray-700">
+        {!isCollapsed && <h1 className="text-xl font-bold">Vogat PBX</h1>}
+        <Button variant="ghost" size="icon" onClick={toggleSidebar} className={cn("ml-auto", isCollapsed && "mx-auto")}>
+          {isCollapsed ? (
+            <ChevronRight className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
+          <span className="sr-only">Toggle sidebar</span>
+        </Button>
+      </div>
+      <nav className="flex-1 overflow-y-auto">
+          <ul className="p-2 space-y-1">
+            {navigation.map((item) => (
+              <li key={item.name}>
+                {item.hasSubmenu ? (
+                  isCollapsed ? (
+                    <DropdownMenu>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              className="w-full justify-center px-2"
+                            >
+                              <item.icon className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                          {item.name}
+                        </TooltipContent>
+                      </Tooltip>
+                      <DropdownMenuContent side="right">
+                        <DropdownMenuLabel>{item.name}</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        {item.submenu?.map((subItem) => (
+                          <DropdownMenuItem key={subItem.name} asChild>
+                            <Link href={subItem.href}>{subItem.name}</Link>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : (
+                    <Collapsible>
+                      <CollapsibleTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-between text-left font-normal"
+                        >
+                          <span className="flex items-center">
+                            <item.icon className="mr-2 h-4 w-4" />
+                            {item.name}
+                          </span>
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <ul className="pl-6 mt-1 space-y-1">
+                          {item.submenu?.map((subItem) => (
+                            <li key={subItem.name}>
+                              <Link
+                                href={subItem.href}
+                                className={cn(
+                                  "block py-2 px-3 rounded-md text-sm",
+                                  pathname === subItem.href
+                                    ? "bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
+                                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-100"
+                                )}
+                              >
+                                {subItem.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  )
+                ) : (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link
+                        href={item.href || "#"}
+                        className={cn(
+                          "flex items-center py-2 px-3 rounded-md",
+                          pathname === item.href
+                            ? "bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
+                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-100",
+                          isCollapsed && "justify-center px-2"
+                        )}
+                      >
+                        <item.icon className={cn("h-4 w-4", !isCollapsed && "mr-2")} />
+                        {!isCollapsed && <span>{item.name}</span>}
+                      </Link>
+                    </TooltipTrigger>
+                    {isCollapsed && (
+                      <TooltipContent side="right">
+                        {item.name}
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                )}
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
           <Switch
             checked={isDarkMode}
             onCheckedChange={toggleDarkMode}
             className="data-[state=checked]:bg-primary"
           />
-          {isDarkMode ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-          <Bell className="h-5 w-5 cursor-pointer" />
-          <div className="flex items-center space-x-2 cursor-pointer">
-            <Avatar>
-              <AvatarImage src="/placeholder.svg?height=32&width=32" alt="User" />
-              <AvatarFallback>TC</AvatarFallback>
-            </Avatar>
-            <ChevronDown className="h-4 w-4" />
-          </div>
-        </div>
-      </header>
-
-      {/* Sidebar */}
-      <div className="flex h-screen pt-16">
-        <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 text-gray-600">
-          <nav className="flex-1 space-y-1 px-2 py-4">
-            {navigation.map((item) => (
-              <div key={item.name}>
-                {item.hasSubmenu ? (
-                  <button
-                  className={cn(
-                    "w-full flex items-center justify-between px-4 py-2 text-sm font-semibold rounded-md",
-                    expandedItems.includes(item.name) ? "text-purple-600 bg-purple-50" : "text-gray-600 hover:bg-gray-50 hover:text-purple-600"
-                  )}
-                  onClick={() => toggleExpand(item.name)}
-                >
-                    <span className="flex items-center">
-                      <item.icon className="mr-4 h-4 w-4" />
-                      {item.name}
-                    </span>
-                    {expandedItems.includes(item.name) ? (
-                      <ChevronDown className="h-4 w-4" />
-                    ) : (
-                      <ChevronRight className="h-4 w-4" />
-                    )}
-                  </button>
-                ) : item.href ? (
-                  <Link href={item.href} passHref>
-                    <div
-                      className={cn(
-                        "flex items-center px-4 py-2 text-sm font-semibold rounded-md",
-                        pathname === item.href ? "text-purple-600 bg-purple-50" : "text-gray-600 hover:bg-gray-50 hover:text-purple-600"
-                      )}
-                    >
-                      <item.icon className="mr-3 h-5 w-5" />
-                      {item.name}
-                    </div>
-                  </Link>
-                ) : null}
-                {item.hasSubmenu && expandedItems.includes(item.name) && (
-                  <div className="ml-4 mt-2 space-y-1">
-                    {item.submenu?.map((subItem) => (
-                      <Link key={subItem.name} href={subItem.href} passHref>
-                        <div
-                          className={cn(
-                            "flex items-center px-4 py-2 text-sm font-medium rounded-md",
-                            pathname === subItem.href ? "text-purple-600 bg-purple-50" : "text-gray-600 hover:bg-gray-50 hover:text-purple-600"
-                          )}
-                        >
-                          {subItem.name}
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </nav>
+          {isDarkMode ? (
+            <Moon className="h-5 w-5" />
+          ) : (
+            <Sun className="h-5 w-5" />
+          )}
         </div>
       </div>
-    </div>
+    </TooltipProvider>
   )
 }
