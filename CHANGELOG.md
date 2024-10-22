@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/kayp514/VogatPBX-AdminUI/compare/v1.1.0...v1.2.0) (2024-10-19)
+
+
+### Features
+
+* **layout:** implement new sidebar, topbar, and breadcrumb navigation ([400e5be](https://github.com/kayp514/VogatPBX-AdminUI/commit/400e5bee655a738276c2fbd1f195aafbb9e84e33))
+
 # [1.1.0](https://github.com/kayp514/VogatPBX-AdminUI/compare/v1.0.0...v1.1.0) (2024-10-19)
 
 
