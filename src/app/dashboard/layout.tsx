@@ -49,7 +49,6 @@ const hasOwnPage = (segment: string, index: number, segments: string[]) => {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const [mounted, setMounted] = React.useState(false)
 
   const breadcrumbs = React.useMemo(() => {
     const pathSegments = pathname.split("/").filter(Boolean)

@@ -1,3 +1,6 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
 import { Button as ShadcnButton } from "@/components/ui/button"
 import { PlusCircle, Trash2 } from "lucide-react"
 
@@ -32,18 +35,28 @@ export function DeleteButton({ onClick }: { onClick: () => void }) {
   )
 }
 
-export function AddExtensionButton({ onClick }: { onClick: () => void }) {
+export function AddExtensionButton() {
+  const router = useRouter()
+
+  const handleAdd = () => {
+    router.push('/dashboard/accounts/extensions/add')
+  }
+
   return (
-    <CustomButton onClick={onClick}>
+    <CustomButton onClick={handleAdd}>
       <PlusCircle className="mr-2 h-4 w-4" />
       Add Extension
     </CustomButton>
   )
 }
 
-export function DeleteExtensionButton({ onClick }: { onClick: () => void }) {
+export function DeleteExtensionButton() {
+  const handleDelete = () => {
+    console.log('Delete selected extensions')
+    // Implement delete logic here
+  }
   return (
-    <CustomButton onClick={onClick} variant="outline">
+    <CustomButton onClick={handleDelete} variant="outline">
       <Trash2 className="mr-2 h-4 w-4" />
       Delete Extension
     </CustomButton>
