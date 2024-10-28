@@ -9,7 +9,7 @@ import { GatewaySkeleton } from "@/app/ui/skeleton"
 import { AddGatewayButton, DeleteGatewayButton } from "@/app/ui/buttons"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { Check, X } from "lucide-react"
+import { CheckCircle2, XCircle } from "lucide-react"
 import { GatewayAddDialog } from "@/app/ui/gatewayAdd-dialog"
 
 type Gateway = {
@@ -147,9 +147,9 @@ export default function GatewayPage() {
                     <TableCell>{gateway.state}</TableCell>
                     <TableCell>
                       {gateway.enabled ? (
-                        <Check className="text-green-500" />
+                        <CheckCircle2 className="text-green-500" size={20} />
                       ) : (
-                        <X className="text-red-500" />
+                        <XCircle className="text-red-500" size={20} />
                       )}
                     </TableCell>
                     <TableCell>{gateway.description}</TableCell>

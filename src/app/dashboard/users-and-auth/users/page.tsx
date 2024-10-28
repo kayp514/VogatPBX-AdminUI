@@ -8,32 +8,52 @@ import { Switch } from "@/components/ui/switch"
 import { UserSkeleton } from "@/app/ui/skeleton"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
+import { User, CheckCircle2, XCircle } from "lucide-react"
+import { UserAddDialog } from "@/app/ui/userAddDialog"
 
 
-// This would typically come from an API or database
-const initialUsers = [
-  { id: 1, username: "john_doe", email: "john@example.com", firstName: "John", lastName: "Doe", staffStatus: true, active: true },
-  { id: 2, username: "jane_smith", email: "jane@example.com", firstName: "Jane", lastName: "Smith", staffStatus: true, active: true},
-  { id: 3, username: "bob_johnson", email: "bob@example.com", firstName: "Bob", lastName: "Johnson", staffStatus: false, active: false },
-]
+type Users = {
+  id: string;
+  user_uuid: string;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  status: string;
+  enabled: string;
+  is_staff: boolean;
+  is_active: boolean;
+  is_superuser: boolean;
+}
+
 
 export default function UserPage() {
-  const [users, setUsers] = useState(initialUsers)
-  const [selectedUsers, setSelectedUsers] = useState<number[]>([])
+  const [users, setUsers] = useState<Users[]>([])
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    // Simulate API call
-    const fetchUsers = async () => {
-      await new Promise(resolve => setTimeout(resolve, 1500)) // Simulate delay
-      setUsers(initialUsers)
-      setLoading(false)
+    async function fetchUsers() {
+      try {
+        const response = await fetch('/api/users/')
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        setUsers(data)
+      } catch (e) {
+        setError('Failed to fetch domains')
+        console.error('Error fetching domains:', e)
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchUsers()
   }, [])
 
-  const toggleUser = (id: number) => {
+  const toggleUser = (id: string) => {
     setSelectedUsers(prev =>
       prev.includes(id) ? prev.filter(userId => userId !== id) : [...prev, id]
     )
@@ -45,10 +65,10 @@ export default function UserPage() {
     )
   }
 
-  const toggleActive = (id: number) => {
+  const toggleActive = (id: string) => {
     setUsers(prev =>
       prev.map(user =>
-        user.id === id ? { ...user, active: !user.active } : user
+        user.id === id ? { ...user, is_active: !user.is_active } : user
       )
     )
   }
@@ -58,29 +78,32 @@ export default function UserPage() {
     // Implement delete logic here
   }
 
-  const handlePreferences = (id: number) => {
-    console.log(`Open preferences for gateway with id: ${id}`)
+  const handlePreferences = (id: string) => {
+    console.log(`Open preferences for user with id: ${id}`)
     // Implement preferences logic here
   }
 
-  const handleToggleEnable = (id: number) => {
-    console.log(`Toggle enable for gateway with id: ${id}`)
-    // Implement toggle enable logic here
+  const handleToggleActive = (id: string) => {
+    console.log(`Toggle active for user with id: ${id}`)
+    toggleActive(id)
   }
 
-  const handleDeleteSingle = (id: number) => {
-    console.log(`Delete gateway with id: ${id}`)
-    // Implement delete single gateway logic here
+  const handleDeleteSingle = (id: string) => {
+    console.log(`Delete user with id: ${id}`)
+    // Implement delete single user logic here
   }
 
 
   return (
     <div className="container mx-auto py-10">
+      <div className="mb-6 flex justify-between items-center">
+        <h1 className="text-2xl font-semibold">Users</h1>
+        <div className="space-x-2">
+          </div>
+          <UserAddDialog />
+          </div>
       <Card>
-        <CardHeader>
-          <CardTitle>Users</CardTitle>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <Table>
             <TableHeader>
               <TableRow>
@@ -118,14 +141,20 @@ export default function UserPage() {
                   </TableCell>
                   <TableCell>{user.username}</TableCell>
                   <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.firstName}</TableCell>
-                  <TableCell>{user.lastName}</TableCell>
-                  <TableCell>{user.staffStatus ? "Yes" : "No"}</TableCell>
+                  <TableCell>{user.first_name}</TableCell>
+                  <TableCell>{user.last_name}</TableCell>
                   <TableCell>
-                    <Switch
-                      checked={user.active}
+                    {user.is_staff ? (
+                      <CheckCircle2 className="text-green-500" size={20} />
+                    ) : (
+                      <XCircle className="text-red-500" size={20} />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                  <Switch
+                      checked={user.is_active}
                       onCheckedChange={() => toggleActive(user.id)}
-                      className={user.active ? "bg-green-500" : ""}
+                      className={user.is_active ? "bg-green-500" : ""}
                     />
                   </TableCell>
                   <TableCell>
@@ -137,9 +166,9 @@ export default function UserPage() {
                           <DropdownMenuItem onSelect={() => handlePreferences(user.id)}>
                             Preferences
                           </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={() => handleToggleEnable(user.id)}>
-                            {user.active ? 'Disable' : 'Enable'}
-                          </DropdownMenuItem>
+                          <DropdownMenuItem onSelect={() => handleToggleActive(user.id)}>
+                          {user.is_active ? 'Deactivate' : 'Activate'}
+                        </DropdownMenuItem>
                           <DropdownMenuItem onSelect={() => handleDeleteSingle(user.id)}>
                             Delete
                           </DropdownMenuItem>

@@ -10,7 +10,7 @@ import { DomainSkeleton } from "@/app/ui/skeleton"
 import { AddButton, DeleteButton } from "@/app/ui/buttons"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { Check, X } from "lucide-react"
+import { CheckCircle2, XCircle, Check, X } from "lucide-react"
 
 type Domain = {
   id: number;
@@ -138,9 +138,9 @@ export default function DomainPage() {
                     <TableCell>{domain.description}</TableCell>
                     <TableCell>
                       {domain.enabled ? (
-                        <Check className="text-green-500" />
+                        <CheckCircle2 className="text-green-500" size={20} />
                       ) : (
-                        <X className="text-red-500" />
+                        <XCircle className="text-red-500" size={20} />
                       )}
                     </TableCell>
                     <TableCell>

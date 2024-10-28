@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { Check, X } from "lucide-react"
+import { CheckCircle2, XCircle } from "lucide-react"
 import { ExtensionSkeleton } from "./skeleton"
 import { toast } from '@/hooks/use-toast'
 import { Toaster } from "@/components/ui/toaster"
@@ -138,9 +138,9 @@ interface ExtensionTableProps {
                     <TableCell>{extension.user_context}</TableCell>
                     <TableCell>
                       {extension.enabled ? (
-                        <Check className="text-green-500" />
+                        <CheckCircle2 className="text-green-500" size={20} />
                       ) : (
-                        <X className="text-red-500" />
+                        <XCircle className="text-red-500" size={20} />
                       )}
                     </TableCell>
                     <TableCell>

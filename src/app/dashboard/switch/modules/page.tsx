@@ -7,7 +7,7 @@ import { toast } from '@/hooks/use-toast'
 import { Card, CardContent } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Check, X, AlertCircle } from 'lucide-react'
+import { CheckCircle2, XCircle, Check, X, AlertCircle } from 'lucide-react'
 import { VariablesPageSkeleton } from '@/app/ui/skeleton'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
@@ -192,9 +192,9 @@ export default function ModulesPage() {
                               onCheckedChange={() => handleToggleEnabled(module.id)}
                             />
                             {module.enabled === 'true' ? (
-                              <Check className="h-4 w-4 text-green-500" />
+                              <CheckCircle2 className="text-green-500 h-4 w-4" />
                             ) : (
-                              <X className="h-4 w-4 text-red-500" />
+                              <XCircle className="text-red-500 h-4 w-4"/>
                             )}
                           </div>
                         </TableCell>
