@@ -31,7 +31,7 @@ export default function ModulesPage() {
       setIsLoading(true)
       setError(null)
       try {
-        const response = await fetch('/api/modules')
+        const response = await fetch('/api/v1/modules')
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }

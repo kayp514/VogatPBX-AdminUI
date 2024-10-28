@@ -8,7 +8,7 @@ const AddExtensionButton = dynamic(() => import('@/app/ui/buttons').then(mod => 
 const DeleteExtensionButton = dynamic(() => import('@/app/ui/buttons').then(mod => mod.DeleteExtensionButton), { ssr: false })
 
 async function getExtensions() {
-  const res = await fetch('http://localhost:3000/api/extensions', { 
+  const res = await fetch('http://localhost:3000/api/v1/extensions/', { 
     cache: 'no-store' 
   })
   if (!res.ok) {

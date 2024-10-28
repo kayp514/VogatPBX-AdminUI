@@ -35,7 +35,7 @@ export default function SipProfilesPage() {
   useEffect(() => {
   async function fetchSipProfiles() {
     try {
-      const response = await fetch('/api/sipProfiles/')
+      const response = await fetch('/api/v1/sipProfiles/')
       if (!response.ok) {
         throw new Error('Failed to fetch SIP profiles')
       }
@@ -90,7 +90,7 @@ export default function SipProfilesPage() {
     setSelectedProfileId(id)
     setShowCopyDialog(true)
   }
-  
+
   const handleCloseCopyDialog = () => {
     setShowCopyDialog(false)
     setSelectedProfileId(null)

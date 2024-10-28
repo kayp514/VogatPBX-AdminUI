@@ -32,7 +32,7 @@ export default function VariablesPage() {
       setIsLoading(true)
       setError(null)
       try {
-        const response = await fetch('/api/variables')
+        const response = await fetch('/api/v1/variables')
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }

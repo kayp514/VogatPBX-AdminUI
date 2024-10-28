@@ -31,7 +31,7 @@ export default function DomainPage() {
   useEffect(() => {
     async function fetchDomains() {
       try {
-        const response = await fetch('../../api/domains/')
+        const response = await fetch('/api/v1/domains/')
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }

@@ -36,7 +36,7 @@ export default function UserPage() {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const response = await fetch('/api/users/')
+        const response = await fetch('/api/v1/users/')
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }

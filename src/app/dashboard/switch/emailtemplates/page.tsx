@@ -37,7 +37,7 @@ export default function EmailTemplatePage() {
       setIsLoading(true)
       setError(null)
       try {
-        const response = await fetch('/api/emailTemplates')
+        const response = await fetch('/api/v1/emailTemplates')
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }

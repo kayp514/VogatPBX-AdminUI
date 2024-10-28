@@ -36,7 +36,7 @@ export default function GatewayPage() {
   useEffect(() => {
     async function fetchGateways() {
       try {
-        const response = await fetch('/api/gateways')
+        const response = await fetch('/api/v1/gateways/')
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
