@@ -10,6 +10,7 @@ import { AddGatewayButton, DeleteGatewayButton } from "@/app/ui/buttons"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Check, X } from "lucide-react"
+import { GatewayAddDialog } from "@/app/ui/gatewayAdd-dialog"
 
 type Gateway = {
   id: number;
@@ -29,6 +30,8 @@ export default function GatewayPage() {
   const [selectedGateways, setSelectedGateways] = useState<number[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  
 
   useEffect(() => {
     async function fetchGateways() {
@@ -91,8 +94,7 @@ export default function GatewayPage() {
       <div className="mb-6 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Gateways</h1>
         <div className="space-x-2">
-          <DeleteGatewayButton onClick={handleDelete} />
-          <AddGatewayButton onClick={handleAdd} />
+          <GatewayAddDialog />
         </div>
       </div>
       <Card>

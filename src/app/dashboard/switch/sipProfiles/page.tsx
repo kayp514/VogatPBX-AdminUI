@@ -12,6 +12,7 @@ import { toast } from "@/hooks/use-toast"
 import { SipProfilesSkeleton } from "@/app/ui/skeleton"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
+import { SipProfileCopyDialog } from "@/app/ui/sipprofileCopyDialog"
 
 
 type SipProfile = {
@@ -28,6 +29,8 @@ export default function SipProfilesPage() {
   const [selectedSipProfiles, setSelectedSipProfiles] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [showCopyDialog, setShowCopyDialog] = useState(false)
+  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null)
 
   useEffect(() => {
   async function fetchSipProfiles() {
@@ -81,6 +84,16 @@ export default function SipProfilesPage() {
   const handleDeleteSingle = (id: string) => {
     console.log(`Delete domain with id: ${id}`)
     // Implement delete single domain logic here
+  }
+
+  const handleCopy = (id: string) => {
+    setSelectedProfileId(id)
+    setShowCopyDialog(true)
+  }
+  
+  const handleCloseCopyDialog = () => {
+    setShowCopyDialog(false)
+    setSelectedProfileId(null)
   }
 
   return (
@@ -147,6 +160,9 @@ export default function SipProfilesPage() {
                           <DropdownMenuItem onSelect={() => handlePreferences(sipProfile.id)}>
                             Preferences
                           </DropdownMenuItem>
+                          <DropdownMenuItem onSelect={() => handleCopy(sipProfile.id)}>
+                            Copy
+                          </DropdownMenuItem>
                           <DropdownMenuItem onSelect={() => handleDeleteSingle(sipProfile.id)}>
                             Delete
                           </DropdownMenuItem>
@@ -160,6 +176,13 @@ export default function SipProfilesPage() {
           </Table>
         </CardContent>
       </Card>
+      {showCopyDialog && selectedProfileId && (
+        <SipProfileCopyDialog
+          isOpen={showCopyDialog}
+          onClose={handleCloseCopyDialog}
+          profileId={selectedProfileId}
+        />
+      )}
     </div>
   )
 }

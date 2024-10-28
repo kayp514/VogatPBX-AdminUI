@@ -133,7 +133,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
-          <div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <div className="container mx-auto py-4 px-4 sm:px-6 lg:px-8">
             {children}
           </div>
         </main>
