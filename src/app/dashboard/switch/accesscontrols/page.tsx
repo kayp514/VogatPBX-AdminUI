@@ -1,27 +1,51 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { AccessControlDialog } from "@/app/ui/accesscontroladd-dialog"
+import { toast } from "@/hooks/use-toast"
 
 type AccessControl = {
-  id: number;
+  id: string;
   name: string;
   default: string;
   description: string;
 }
 
 export default function AccessControlsPage() {
-  const [accessControls, setAccessControls] = useState<AccessControl[]>([
-    { id: 1, name: "domains", default: "deny", description: "Domain access" },
-    { id: 2, name: "deny", default: "deny", description: "Deny access" },
-  ])
-  const [selectedAccessControls, setSelectedAccessControls] = useState<number[]>([])
+  const [accessControls, setAccessControls] = useState<AccessControl[]>([])
+  const [selectedAccessControls, setSelectedAccessControls] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const toggleAccessControl = (id: number) => {
+  useEffect(() => {
+    async function fetchAccessControls() {
+      try {
+        const response = await fetch('/api/v1/accessControls/')
+        if (!response.ok) {
+          throw new Error('Failed to fetch SIP profiles')
+        }
+        const data = await response.json()
+        setAccessControls(data)
+      } catch (error) {
+        console.error('Error fetching SIP profiles:', error)
+        toast({
+          title: "Error",
+          description: "Failed to fetch SIP profiles. Please try again.",
+          variant: "destructive",
+        })
+      } finally {
+        setLoading(false)
+      }
+    }
+  
+    fetchAccessControls()
+  }, [])
+
+
+  const toggleAccessControl = (id: string) => {
     setSelectedAccessControls(prev =>
       prev.includes(id) ? prev.filter(acId => acId !== id) : [...prev, id]
     )

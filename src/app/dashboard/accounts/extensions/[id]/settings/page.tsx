@@ -162,7 +162,7 @@ export default function ExtensionSettingsPage() {
       setError(null)
       try {
         const [extensionResponse] = await Promise.all([
-          fetch(`/api/extensions/${extensionId}/settings`)
+          fetch(`/api/v1/extensions/${extensionId}/settings`)
         ])
 
         if (!extensionResponse.ok) {
