@@ -125,6 +125,7 @@ model django_content_type {
   id               Int                @id @default(autoincrement())
   app_label        String             @db.VarChar(100)
   model            String             @db.VarChar(100)
+  main_label       String?            @db.VarChar(100)
   auth_permission  auth_permission[]
   django_admin_log django_admin_log[]
 

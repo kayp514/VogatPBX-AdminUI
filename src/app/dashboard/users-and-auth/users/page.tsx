@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -28,6 +29,7 @@ type Users = {
 
 
 export default function UserPage() {
+  const router = useRouter()
   const [users, setUsers] = useState<Users[]>([])
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
@@ -79,8 +81,8 @@ export default function UserPage() {
   }
 
   const handlePreferences = (id: string) => {
-    console.log(`Open preferences for user with id: ${id}`)
-    // Implement preferences logic here
+    console.log(`Open preferences for gateway with id: ${id}`)
+    router.push(`/dashboard/users-and-auth/users/${id}/settings`)
   }
 
   const handleToggleActive = (id: string) => {

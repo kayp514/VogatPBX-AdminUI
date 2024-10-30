@@ -15,6 +15,7 @@ import {
   Moon,
   Settings,
   Shield,
+  SplitIcon,
   Sun,
   SwitchCamera,
   Users,
@@ -71,6 +72,14 @@ const navigation: NavItem[] = [
     ],
   },
   {
+    name : "Tenants",
+    icon: SplitIcon,
+    hasSubmenu: true,
+    submenu: [
+      {name: "Domains", href: "/dashboard/tenants/domains"},
+    ],
+  },
+  {
     name: "Switch",
     icon: SwitchCamera,
     hasSubmenu: true,
@@ -87,7 +96,6 @@ const navigation: NavItem[] = [
     icon: Settings,
     hasSubmenu: true,
     submenu: [
-      { name: "Domain", href: "/dashboard/settings/domains" },
       { name: "Devices", href: "/dashboard/settings/devices" },
       { name: "Menu manage", href: "/dashboard/settings/menus" },
     ],

@@ -61,7 +61,7 @@ export default function DomainPage() {
   }
 
   const handleAdd = () => {
-    router.push('/dashboard/settings/domains/add')
+    router.push('/dashboard/tenants/domains/add')
   }
 
   const handleDelete = () => {

@@ -7,25 +7,32 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { GroupDetailsModal } from "@/app/ui/group-details-modal"
 import { GroupsSkeleton } from "@/app/ui/skeleton"
 
-// This would typically come from an API or database
-const initialGroups = [
-  { id: 1, name: "Administrators" },
-  { id: 2, name: "Managers" },
-  { id: 3, name: "Users" },
-  { id: 4, name: "Guests" },
-]
+type Groups = {
+  id: number;
+  name: string;
+}
 
 export default function GroupsPage() {
-  const [groups, setGroups] = useState(initialGroups)
+  const [groups, setGroups] = useState<Groups[]>([])
   const [selectedGroups, setSelectedGroups] = useState<number[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    // Simulate API call
-    const fetchGroups = async () => {
-      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate delay
-      setGroups(initialGroups)
-      setLoading(false)
+    async function fetchGroups() {
+      try {
+        const response = await fetch('/api/v1/groups/')
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json()
+        setGroups(data)
+      } catch (e) {
+        setError('Failed to fetch domains')
+        console.error('Error fetching domains:', e)
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchGroups()

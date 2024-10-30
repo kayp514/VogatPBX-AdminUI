@@ -63,7 +63,7 @@ export default function AddDomainPage() {
         title: 'Domain added successfully',
         description: 'The new domain has been added to the system.',
       })
-      router.push('/dashboard/settings/domains')
+      router.push('/dashboard/tenants/domains')
     } catch (error) {
       toast({
         title: 'Error',

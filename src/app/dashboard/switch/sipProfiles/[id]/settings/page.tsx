@@ -153,8 +153,8 @@ export default function SipProfileSettingsPage() {
       setError(null)
       try {
         const [profileResponse, settingsResponse] = await Promise.all([
-          fetch(`/api/sipProfiles/${profileId}`),
-          fetch(`/api/sipProfiles/${profileId}/settings`)
+          fetch(`/api/v1/sipProfiles/${profileId}`),
+          fetch(`/api/v1/sipProfiles/${profileId}/settings`)
         ])
 
         if (!profileResponse.ok || !settingsResponse.ok) {
