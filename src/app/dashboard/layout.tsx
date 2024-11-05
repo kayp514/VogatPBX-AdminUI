@@ -23,7 +23,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useMemo } from "react"
 
-const segmentsWithoutPages = ['settings', 'accounts', 'switch', 'monitoring', 'users-and-auth']
+const segmentsWithoutPages = ['settings', 'accounts', 'switch', 'monitoring', 'users-and-auth', 'tenants']
 
 const hasOwnPage = (segment: string, index: number, segments: string[]) => {
   const lowerSegment = segment.toLowerCase()

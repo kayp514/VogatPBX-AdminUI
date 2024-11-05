@@ -58,6 +58,7 @@ model auth_user {
   is_staff                   Boolean
   is_active                  Boolean
   date_joined                DateTime                     @db.Timestamptz(6)
+  external_uuid              String?                      @db.VarChar(255)
   auth_user_groups           auth_user_groups[]
   auth_user_user_permissions auth_user_user_permissions[]
   authtoken_token            authtoken_token?

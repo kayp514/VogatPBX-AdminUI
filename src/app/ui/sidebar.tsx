@@ -32,14 +32,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Switch } from "@/components/ui/switch"
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
@@ -96,6 +88,7 @@ const navigation: NavItem[] = [
     icon: Settings,
     hasSubmenu: true,
     submenu: [
+      { name: "Default Settings", href: "/dashboard/settings/defaultSettings" },
       { name: "Devices", href: "/dashboard/settings/devices" },
       { name: "Menu manage", href: "/dashboard/settings/menus" },
     ],
@@ -134,7 +127,7 @@ export function SidebarComponent() {
       isCollapsed ? "w-16" : "w-64"
     )}>
       <div className="flex items-center h-16 px-4 border-b border-gray-200 dark:border-gray-700">
-        {!isCollapsed && <h1 className="text-xl font-bold">Vogat PBX</h1>}
+        {!isCollapsed && <h1 className="text-xl font-bold">VogatPBX</h1>}
         <Button variant="ghost" size="icon" onClick={toggleSidebar} className={cn("ml-auto", isCollapsed && "mx-auto")}>
           {isCollapsed ? (
             <ChevronRight className="h-4 w-4" />
