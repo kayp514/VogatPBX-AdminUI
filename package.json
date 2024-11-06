@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "commit": "cz",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed/seed.ts",
+    "db:push:seed": "dotenv -e .env.production -- prisma db push && dotenv -e .env.production -- prisma db seed"
   },
   "config": {
     "commitizen": {
