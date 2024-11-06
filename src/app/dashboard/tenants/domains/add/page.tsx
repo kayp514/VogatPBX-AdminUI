@@ -47,7 +47,7 @@ export default function AddDomainPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true)
     try {
-      const response = await fetch('../../../api/domains', {
+      const response = await fetch('../../../api/v1/domains', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
