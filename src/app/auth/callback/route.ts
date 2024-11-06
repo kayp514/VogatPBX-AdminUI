@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
 
   if (!token) {
     console.error('no token', request.url);
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL(`/login?error=no_token`, request.url))
   }
 
   // Set the auth token as a cookie
