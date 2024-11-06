@@ -16,8 +16,9 @@ export async function GET(
 
   try {
     // Fetch the domain
-    const domain = await prisma.pbx_domains.findUnique({
-      where: { id: domainId }
+    const domain = await prisma.pbx_domains.findFirst({
+      where: {
+        id: domainId }
     });
 
     if (!domain) {

@@ -5,6 +5,13 @@ import type { NextRequest } from 'next/server';
 const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://firebase-auth-data.vercel.app';
 
 export async function middleware(request: NextRequest) {
+  const host = request.headers.get('host');
+  const subdomain = host?.split('.')[0];
+
+  if (subdomain && subdomain !== 'www' && host?.includes('vgtpbx.dev')) {
+    return NextResponse.next();
+  }
+
   const token = request.cookies.get('auth_token')?.value;
 
   if (!token) {

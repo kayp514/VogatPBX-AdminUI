@@ -38,7 +38,7 @@ export default function SignupPage() {
       const domainName = hostname.split('.')[0] // Get the part before the first dot
       return `${domainName}.vogat.com`
     } else {
-      return `${name.toLowerCase().replace(/[^a-z0-9]/g, '')}.vogat.com`
+      return `${name.toLowerCase().replace(/[^a-z0-9]/g, '')}.vgtpbx.dev`
     }
   }
 
