@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { toast } from '@/hooks/use-toast'
+import { Toaster } from '@/components/ui/toaster'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { GlobeIcon, ServerIcon, FileTextIcon, ToggleLeftIcon } from 'lucide-react'
 
@@ -191,6 +192,7 @@ export default function AddDomainPage() {
           </Form>
         </CardContent>
       </Card>
+      <Toaster />
     </div>
   )
 }
