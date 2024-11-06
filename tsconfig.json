@@ -27,7 +27,8 @@
       ]
     },
     "types": [
-      "@prisma/client"
+      "@prisma/client",
+      "node"
     ],
     "target": "ES2017"
   },

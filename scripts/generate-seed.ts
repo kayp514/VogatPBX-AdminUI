@@ -19,24 +19,32 @@ async function ensureDirectoryExists(filePath: string): Promise<void> {
 
 async function main() {
   const tables = [
+    'django_content_type',
     'auth_group',
+    'auth_permission',
     'auth_user',
     'auth_user_groups',
     'authtoken_token',
     'django_admin_log',
-    'pbx_users',
+    'pbx_menus',
+    'pbx_menu_items',
+    'pbx_menu_item_groups',
     'pbx_domains',
+    'pbx_domain_settings',
     'pbx_email_templates',
     'pbx_extensions',
     'pbx_gateways',
     'pbx_modules',
-    'auth_permission',
     'pbx_sip_profiles',
+    'pbx_sip_profile_settings',
+    'pbx_sip_profile_domains',
+    'pbx_users',
     'pbx_vars'
   ];
 
   let seedData = `import { PrismaClient } from '@prisma/client';\n\n`;
-  seedData += `async function seed(prisma: PrismaClient): Promise<void> {\n`;
+  seedData += `const prisma = new PrismaClient();\n\n`;
+  seedData += `async function seed(): Promise<void> {\n`;
   seedData += `  try {\n`;
 
   for (const table of tables) {
@@ -52,11 +60,22 @@ async function main() {
     seedData += `    });\n\n`;
   }
 
-  seedData += `    console.log('Seed data inserted successfully');\n`;
+  seedData += `    console.log('Seeding completed successfully');\n`;
   seedData += `  } catch (error) {\n`;
   seedData += `    console.error('Error seeding database:', error);\n`;
+  seedData += `    throw error;\n`;
+  seedData += `  } finally {\n`;
+  seedData += `    await prisma.$disconnect();\n`;
   seedData += `  }\n`;
   seedData += `}\n\n`;
+
+  seedData += `seed()\n`;
+  seedData += `  .catch(async (e) => {\n`;
+  seedData += `    console.error(e);\n`;
+  seedData += `    await prisma.$disconnect();\n`;
+  seedData += `    process.exit(1);\n`;
+  seedData += `  });\n\n`;
+
   seedData += `export default seed;\n`;
 
   const seedFilePath = path.join(__dirname, '..', 'prisma', 'seed.ts');
