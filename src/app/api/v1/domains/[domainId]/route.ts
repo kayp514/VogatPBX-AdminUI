@@ -21,15 +21,15 @@ export async function GET(
     });
 
     if (!domain) {
-      return NextResponse.json({ error: 'Extension not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Domain not found' }, { status: 404 });
     }
 
     // Combine profile and domains data
-    const response = {
-      ...domain,
-    };
+   // const response = {
+   //   ...domain,
+   // };
 
-    return NextResponse.json(response);
+    return NextResponse.json(domain);
   } catch (error) {
     console.error('Error fetching Domain:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
