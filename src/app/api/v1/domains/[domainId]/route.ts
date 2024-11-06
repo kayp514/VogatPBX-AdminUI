@@ -1,21 +1,21 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client'
 import { prisma as prismaImport} from '@/lib/prisma';
 
 const prisma = prismaImport as PrismaClient
 
 export async function GET(
-  request: Request,
-  { params }: { params: { domainId: string } }
+  request: NextRequest,
+  context: { params: Promise<{ domainId: string }> }
 ) {
-  const { domainId } = params;
+  const { domainId } = await context.params;
 
   if (!domainId) {
     return NextResponse.json({ error: 'Domain ID is required' }, { status: 400 });
   }
 
   try {
-    // Fetch the SIP profile
+    // Fetch the domain
     const domain = await prisma.pbx_domains.findUnique({
       where: { id: domainId }
     });
@@ -24,11 +24,7 @@ export async function GET(
       return NextResponse.json({ error: 'Domain not found' }, { status: 404 });
     }
 
-    // Combine profile and domains data
-   // const response = {
-   //   ...domain,
-   // };
-
+    // Return the domain data
     return NextResponse.json(domain);
   } catch (error) {
     console.error('Error fetching Domain:', error);

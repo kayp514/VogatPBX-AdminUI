@@ -6,9 +6,9 @@ const prisma = prismaImport as PrismaClient
 
 export async function GET(
   request: Request,
-  { params }: { params: { profileId: string } }
+  context:{ params: Promise<{ profileId: string }> }
 ) {
-  const { profileId } = params;
+  const { profileId } = await context.params;
 
   if (!profileId) {
     return NextResponse.json({ error: 'Profile ID is required' }, { status: 400 });

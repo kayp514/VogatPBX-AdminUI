@@ -1,14 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextRequest,NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client'
 import { prisma as prismaImport} from '@/lib/prisma';
 
 const prisma = prismaImport as PrismaClient
 
 export async function GET(
-  request: Request,
-  { params }: { params: { extensionId: string } }
+  request: NextRequest,
+  context: { params: Promise<{ extensionId: string }> }
 ) {
-  const { extensionId } = params;
+  const { extensionId } = await context.params;
 
   if (!extensionId) {
     return NextResponse.json({ error: 'Extension ID is required' }, { status: 400 });
@@ -25,11 +25,11 @@ export async function GET(
     }
 
     // Combine profile and domains data
-    const response = {
-      ...extension,
-    };
+    //const response = {
+    //  ...extension,
+    //};
 
-    return NextResponse.json(response);
+    return NextResponse.json(extension);
   } catch (error) {
     console.error('Error fetching Extension:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

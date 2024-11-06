@@ -6,9 +6,9 @@ const prisma = prismaImport as PrismaClient
 
 export async function GET(
   request: Request,
-  { params }: { params: { gatewayId: string } }
+  context:{ params: Promise<{ gatewayId: string }> }
 ) {
-  const { gatewayId } = params;
+  const { gatewayId } = await context.params;
 
   if (!gatewayId) {
     return NextResponse.json({ error: 'Gateway ID is required' }, { status: 400 });

@@ -1,5 +1,5 @@
 
-import { useState, Suspense} from "react"
+import { Suspense} from "react"
 import { ExtensionSkeleton } from "@/app/ui/skeleton"
 import dynamic from 'next/dynamic'
 import ExtensionTable from "@/app/ui/AllExtensionsTable"
@@ -8,7 +8,7 @@ import ExtensionTable from "@/app/ui/AllExtensionsTable"
 //const DeleteExtensionButton = dynamic(() => import('@/app/ui/buttons').then(mod => mod.DeleteExtensionButton), { ssr: false })
 
 async function getExtensions() {
-  const res = await fetch('http://localhost:3000/api/v1/extensions/', { 
+  const res = await fetch('/api/v1/extensions/', { 
     cache: 'no-store' 
   })
   if (!res.ok) {
