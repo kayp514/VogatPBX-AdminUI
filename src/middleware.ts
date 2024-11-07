@@ -6,28 +6,21 @@ const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'vgtpbx.dev';
 
 export async function middleware(request: NextRequest) {
   const host = request.headers.get('host') || '';
-  const [subdomain, domain, tld] = host.split('.');
-  
-  const isLocalhost = domain === 'localhost' || host === 'localhost:3000';
-  const isRootDomain = `${domain}.${tld}` === ROOT_DOMAIN || host === ROOT_DOMAIN;
-  const isSubdomain = (!isRootDomain && subdomain !== 'www') || (isLocalhost && subdomain !== 'localhost');
+  const subdomain = host?.split('.')[0];
+  const isLocalhost = host?.includes('localhost:3000');
+  const isRootDomain = host === ROOT_DOMAIN || host === `www.${ROOT_DOMAIN}`;
+  const isSubdomain = !isRootDomain && !isLocalhost && subdomain !== 'www';
 
   const token = request.cookies.get('auth_token')?.value;
   const isAuthCallback = request.nextUrl.pathname === '/auth/callback';
   const isLoginPage = request.nextUrl.pathname === '/login';
-  const isRootPath = request.nextUrl.pathname === '/';
 
   // Allow access to auth callback without a token
   if (isAuthCallback) {
     return NextResponse.next();
   }
 
-  // Handle root domain and localhost without subdomain
-  if ((isRootDomain || (isLocalhost)) && isRootPath) {
-    return NextResponse.next(); // Show landing page
-  }
-
-  // Handle subdomain logic (including localhost subdomains)
+  // Handle subdomain logic
   if (isSubdomain) {
     // For production subdomains, validate
     if (!isLocalhost) {
@@ -44,9 +37,18 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // For authenticated routes on root domain, localhost, or subdomains
-  if (!isRootPath && !token && !isLoginPage) {
-    return NextResponse.redirect(new URL('/login', request.url));
+  // Root domain logic
+  if (isRootDomain || isLocalhost) {
+    // Allow access to the landing page without authentication
+    if (request.nextUrl.pathname === '/') {
+      return NextResponse.next();
+    }
+
+    // For other pages on the root domain, check for authentication
+    if (!token && !isLoginPage) {
+      console.log('No token found in middleware, redirecting to login');
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
   }
 
   // Token verification for authenticated routes
@@ -63,6 +65,7 @@ export async function middleware(request: NextRequest) {
       const data = await res.json();
 
       if (!data.valid) {
+        console.log('Invalid token, redirecting to login');
         const response = NextResponse.redirect(new URL('/login', request.url));
         response.cookies.delete('auth_token');
         return response;
@@ -82,6 +85,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Allow access to public routes or return next() for authenticated routes
   return NextResponse.next();
 }
 
