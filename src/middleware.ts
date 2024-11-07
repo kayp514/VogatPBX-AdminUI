@@ -1,20 +1,22 @@
-// middleware.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://firebase-auth-data.vercel.app';
+const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'vgtpbx.dev';
 
 export async function middleware(request: NextRequest) {
   const host = request.headers.get('host');
   const subdomain = host?.split('.')[0];
-  const isSubdomain = subdomain && subdomain !== 'www' && (host?.includes('vgtpbx.dev') || host?.includes('localhost'));
+  const isLocalhost = host?.includes('localhost');
+  const isRootDomain = host === ROOT_DOMAIN || host === `www.${ROOT_DOMAIN}`;
+  const isSubdomain = !isRootDomain && !isLocalhost && subdomain !== 'www';
 
   const token = request.cookies.get('auth_token')?.value;
-  const isRootLoginPage = request.nextUrl.pathname === '/login';
-  const isCallbackPage = request.nextUrl.pathname === '/login';
+  const isAuthCallback = request.nextUrl.pathname === '/auth/callback';
   const isLoginPage = request.nextUrl.pathname === '/login';
 
-  if (isLoginPage) {
+  // Allow access to auth callback without a token
+  if (isAuthCallback) {
     return NextResponse.next();
   }
 
@@ -27,19 +29,28 @@ export async function middleware(request: NextRequest) {
       return NextResponse.rewrite(new URL('/404', request.url));
     }
 
-    if (!token) {
-      // Redirect to domain login if not authenticated
-      console.log('No token found in middleware, redirecting to domain login')
-      return NextResponse.redirect(new URL(`/login`, request.url));
+    if (!token && !isLoginPage) {
+      // Redirect to subdomain login page if not authenticated
+      const loginUrl = new URL('/login', request.url);
+      return NextResponse.redirect(loginUrl);
     }
   }
 
+  // Root domain logic
+  if (isRootDomain || isLocalhost) {
+    // Allow access to the landing page without authentication
+    if (request.nextUrl.pathname === '/') {
+      return NextResponse.next();
+    }
 
-  if (!token) {
-    console.log('No token found in middleware, redirecting to login');
-    return NextResponse.redirect(new URL('/login', request.url));
+    // For other pages on the root domain, check for authentication
+    if (!token && !isLoginPage) {
+      console.log('No token found in middleware, redirecting to login');
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
   }
 
+  // Token verification for authenticated routes
   if (token) {
     try {
       const res = await fetch(`${AUTH_APP_URL}/api/auth/verify`, {
@@ -52,9 +63,11 @@ export async function middleware(request: NextRequest) {
 
       const data = await res.json();
 
-      if (!data.valid && !isRootLoginPage) {
+      if (!data.valid) {
         console.log('Invalid token, redirecting to login');
-        return NextResponse.redirect(new URL('/login', request.url));
+        const response = NextResponse.redirect(new URL('/login', request.url));
+        response.cookies.delete('auth_token');
+        return response;
       }
 
       const requestHeaders = new Headers(request.headers);
@@ -67,12 +80,11 @@ export async function middleware(request: NextRequest) {
       });
     } catch (error) {
       console.error('Authentication error:', error);
-      if (!isRootLoginPage) {
-        return NextResponse.redirect(new URL('/login', request.url));
-      }
+      return NextResponse.redirect(new URL('/login', request.url));
     }
   }
 
+  // Allow access to public routes or return next() for authenticated routes
   return NextResponse.next();
 }
 
