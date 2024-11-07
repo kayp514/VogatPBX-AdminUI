@@ -3045,6 +3045,20 @@ async function seed(): Promise<void> {
     "is_active": true,
     "date_joined": "2024-11-05T21:12:16.262Z",
     "external_uuid": "0GPF3grSIXbPrrG9qOp8gt6GiUa2"
+  },
+  {
+    "id": 1351,
+    "password": "placeholder",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "localhost343@localhost.com",
+    "first_name": "",
+    "last_name": "",
+    "email": "localhost343@localhost.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2024-11-07T22:38:54.372Z",
+    "external_uuid": "4GCOQhctdPRJryklejBZS67CqCG2"
   }
 ],
       skipDuplicates: true,
@@ -3088,6 +3102,11 @@ async function seed(): Promise<void> {
     "key": "0GPF3grSIXbPrrG9qOp8gt6GiUa2",
     "created": "2024-11-05T21:12:16.281Z",
     "user_id": 1341
+  },
+  {
+    "key": "4GCOQhctdPRJryklejBZS67CqCG2",
+    "created": "2024-11-07T22:38:54.409Z",
+    "user_id": 1351
   }
 ],
       skipDuplicates: true,
@@ -4064,19 +4083,6 @@ async function seed(): Promise<void> {
     "portal_name": "serra.pbxportal.ca"
   },
   {
-    "id": "bf639904-abb0-4b49-a9a2-3d2c0a04c6ce",
-    "name": "localhost",
-    "enabled": "true",
-    "description": null,
-    "created": null,
-    "updated": null,
-    "synchronised": null,
-    "updated_by": "admin",
-    "home_switch": "localhost",
-    "menu_id_id": "5dc0b38c-7522-4c25-a2b9-d6f34d9828e3",
-    "portal_name": "lcoalhost"
-  },
-  {
     "id": "ce93878b-e612-4311-8204-a41a78c6f24a",
     "name": "adc.vogatpbx.com",
     "enabled": "true",
@@ -4480,17 +4486,30 @@ async function seed(): Promise<void> {
     "portal_name": "json"
   },
   {
-    "id": "d6fc18bc-7028-4467-8725-cfeb2ff8ed89",
-    "name": "key.vogat.com",
+    "id": "b70589fe-6134-4661-8c77-fab38d710e44",
+    "name": "localhost",
     "enabled": "true",
-    "description": "Domain for key",
+    "description": "Domain for localhost",
+    "created": "2024-11-07T22:38:54.172Z",
+    "updated": "2024-11-07T22:38:54.172Z",
+    "synchronised": null,
+    "updated_by": "system",
+    "home_switch": "default",
+    "menu_id_id": null,
+    "portal_name": "localhost"
+  },
+  {
+    "id": "d6fc18bc-7028-4467-8725-cfeb2ff8ed89",
+    "name": "vgtpbx.dev",
+    "enabled": "true",
+    "description": "Domain for vgtpbx",
     "created": "2024-11-05T21:12:16.206Z",
     "updated": "2024-11-05T21:12:16.206Z",
     "synchronised": null,
     "updated_by": "system",
     "home_switch": "default",
     "menu_id_id": null,
-    "portal_name": "key"
+    "portal_name": "vgtpbx"
   }
 ],
       skipDuplicates: true,
@@ -10586,51 +10605,6 @@ async function seed(): Promise<void> {
     await prisma.pbx_users.createMany({
       data: [
   {
-    "id": 1291,
-    "user_uuid": "4f8a664a-907c-499d-a716-eb8017277e6c",
-    "username": "turbo@turbo.com",
-    "email": "turbo@turbo.com",
-    "status": "",
-    "api_key": null,
-    "enabled": "true",
-    "created": "2024-11-05T20:45:03.863Z",
-    "updated": "2024-11-05T20:45:03.863Z",
-    "synchronised": null,
-    "updated_by": "system",
-    "domain_id_id": "b07f618b-02f5-4da3-931b-02c107c2e849",
-    "user_id": 1291
-  },
-  {
-    "id": 1301,
-    "user_uuid": "c54c365e-d34f-4b23-837c-7f6c1e82baff",
-    "username": "dow@dow.com",
-    "email": "dow@dow.com",
-    "status": "",
-    "api_key": null,
-    "enabled": "true",
-    "created": "2024-11-05T20:52:11.417Z",
-    "updated": "2024-11-05T20:52:11.417Z",
-    "synchronised": null,
-    "updated_by": "system",
-    "domain_id_id": "be78853d-4ee3-4470-8bda-729e600a272a",
-    "user_id": 1301
-  },
-  {
-    "id": 1071,
-    "user_uuid": "544433dc-399f-4823-889e-ff6ed66ab02f",
-    "username": "she@se.com",
-    "email": "she@se.com",
-    "status": "",
-    "api_key": null,
-    "enabled": "true",
-    "created": "2024-11-05T20:55:25.017Z",
-    "updated": "2024-11-05T20:55:25.017Z",
-    "synchronised": null,
-    "updated_by": "system",
-    "domain_id_id": "d6724df3-f2c9-44df-a737-0231e5f68dca",
-    "user_id": 1311
-  },
-  {
     "id": 1321,
     "user_uuid": "b6240e62-d333-4d0f-93d6-d779d523ec3c",
     "username": "event@ev.com",
@@ -10644,21 +10618,6 @@ async function seed(): Promise<void> {
     "updated_by": "event@ev.com",
     "domain_id_id": "7a25a001-c1a9-4fe3-a1a4-82b4bc5aa587",
     "user_id": 1321
-  },
-  {
-    "id": 1331,
-    "user_uuid": "fe0eb7b7-a14b-478c-b844-8e8e82076ef5",
-    "username": "json@json.com",
-    "email": "json@json.com",
-    "status": "",
-    "api_key": null,
-    "enabled": "true",
-    "created": "2024-11-05T21:08:29.705Z",
-    "updated": "2024-11-05T21:08:29.705Z",
-    "synchronised": null,
-    "updated_by": "system",
-    "domain_id_id": "efd06897-82c8-4496-9f48-06ef3303c6c3",
-    "user_id": 1331
   },
   {
     "id": 1341,

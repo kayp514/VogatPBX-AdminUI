@@ -9,7 +9,7 @@ export async function GET(
   context: { params: Promise<{ domainId: string }> }
 ) {
   const { domainId } = await context.params;
-  const isSubdomain = request.nextUrl.searchParams.get('isSubdomain') === 'true';
+  console.log('Domain ID from Route:', domainId)
 
   if (!domainId) {
     return NextResponse.json({ error: 'Domain ID is required' }, { status: 400 });
@@ -18,7 +18,7 @@ export async function GET(
   try {
     // Fetch the domain
     const domain = await prisma.pbx_domains.findFirst({
-      where: isSubdomain
+      where: domainId
         ? { name: domainId }
         : { OR: [{ id: domainId }, { name: domainId }] }
     });
@@ -27,11 +27,11 @@ export async function GET(
       return NextResponse.json({ error: 'Domain not found' }, { status: 404 });
     }
 
-    // Return the domain data
     const response = {
-    ...domain,
-    };
+      ...domain,
+      };
 
+    // Return the domain data
     return NextResponse.json(response);
   } catch (error) {
     console.error('Error fetching Domain:', error);

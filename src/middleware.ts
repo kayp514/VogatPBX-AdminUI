@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+const PROD_ROOT_DOMAIN = 'vgtpbx.dev';
+const DEV_ROOT_DOMAIN = 'localhost:3000';
+const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN || PROD_ROOT_DOMAIN;
 const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://firebase-auth-data.vercel.app';
-const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'vgtpbx.dev';
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
@@ -10,18 +12,29 @@ export const config = {
 
 export async function middleware(request: NextRequest) {
   const hostname = request.headers.get('host') || 'localhost';
-  const currentHost = hostname.replace(`.${ROOT_DOMAIN}`, '');
+  const isLocalhost = hostname.includes('localhost');
+
+  let currentHost;
+  if (isLocalhost) {
+    currentHost = hostname.split('.')[0] === 'localhost' ? '' : hostname.split('.')[0];
+  } else {
+    currentHost = hostname.replace(`.${PROD_ROOT_DOMAIN}`, '');
+  }
 
   // Define allowed hosts
-  const allowedHosts = ['localhost:3000', ROOT_DOMAIN, `www.${ROOT_DOMAIN}`];
+  const allowedHosts = [DEV_ROOT_DOMAIN, PROD_ROOT_DOMAIN, `www.${PROD_ROOT_DOMAIN}`];
 
-  if (!allowedHosts.includes(hostname) && !hostname.endsWith(`.${ROOT_DOMAIN}`)) {
+  console.log('Root Domain:', ROOT_DOMAIN);
+  console.log('Current Host:', currentHost);
+  console.log('Allowed Hosts:', allowedHosts);
+
+  if (!allowedHosts.includes(hostname) && !hostname.endsWith(`.${DEV_ROOT_DOMAIN}`) && !hostname.endsWith(`.${PROD_ROOT_DOMAIN}`)) {
+    console.log('Bad Request for:', hostname);
     return new NextResponse(null, { status: 400, statusText: 'Bad Request' });
   }
 
-  const isRootDomain = hostname === ROOT_DOMAIN || hostname === `www.${ROOT_DOMAIN}`;
-  const isLocalhost = hostname === 'localhost:3000';
-  const isSubdomain = !isRootDomain && !isLocalhost;
+  const isRootDomain = hostname === PROD_ROOT_DOMAIN || hostname === `www.${PROD_ROOT_DOMAIN}` || hostname === DEV_ROOT_DOMAIN;
+  const isSubdomain = !isRootDomain && currentHost !== '';
 
   const token = request.cookies.get('auth_token')?.value;
   const isAuthCallback = request.nextUrl.pathname === '/auth/callback';
@@ -34,22 +47,33 @@ export async function middleware(request: NextRequest) {
   }
 
   // Handle root domain and localhost
-  if ((isRootDomain || isLocalhost) && isRootPath) {
+  if (isRootDomain && isRootPath) {
     return NextResponse.next(); // Show landing page
   }
 
   // Handle subdomain logic
   if (isSubdomain) {
-    // Validate subdomain
-    const subdomainValidationResponse = await fetch(`${request.nextUrl.origin}/api/v1/domains/${currentHost}?isSubdomain=true`);
-    
-    if (!subdomainValidationResponse.ok) {
-      return NextResponse.rewrite(new URL('/404', request.url));
-    }
+    // Validate subdomain using the correct API path
+    try {
+      const subdomainValidationResponse = await fetch(`${request.nextUrl.origin}/api/v1/domains/${encodeURIComponent(currentHost)}`);
+      console.log('EncodeURI:', encodeURIComponent(currentHost))
 
-    // Redirect to login if not authenticated, except for login page
-    if (!token && !isLoginPage) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      if (!subdomainValidationResponse.ok) {
+        console.log('sudDomain not found in subcheck')
+        return NextResponse.rewrite(new URL('/404', request.url));
+      }
+
+      // Subdomain exists, check authentication
+      if (!token && !isLoginPage) {
+        console.log('subdomain exists not token found')
+        return NextResponse.redirect(new URL(`/login?subdomain=${currentHost}`, request.url));
+      }
+
+      // Authenticated or accessing login page, allow access
+      return NextResponse.rewrite(new URL(`/domain/${currentHost}${request.nextUrl.pathname}`, request.url));
+    } catch (error) {
+      console.error('Error validating subdomain:', error);
+      return NextResponse.rewrite(new URL('/404', request.url));
     }
   }
 

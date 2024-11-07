@@ -8,10 +8,20 @@ interface PageProps {
 }
 
 export default async function DomainPage({ params }: PageProps) {
-  // Await the params
-  const resolvedParams = await params
-  const [domainId, ...path] = resolvedParams.slug
+  // Await the params object
+  const { slug } = await params
+
+  // Get the last segment as the domainId since the URL structure will be /domain/hp/login
+  const domainId = slug[1] // This will get 'hp' from the path
+  const path = slug.slice(2) // This will get remaining segments after 'hp'
+
+  console.log('Domain ID:', domainId)
+  console.log('Path:', path)
   
+  if (!domainId) {
+    notFound()
+  }
+
   try {
     const domainInfo = await getDomain(domainId)
 

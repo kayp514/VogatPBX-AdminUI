@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { LogIn, AlertCircle } from "lucide-react"
 
 const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://firebase-auth-data.vercel.app'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 
 const errorMessages = {
   'no_token': 'Authentication failed. Please try again.',
@@ -37,7 +38,8 @@ export default function LoginFormDomain() {
 
   const validateSubdomain = async (subdomain: string) => {
     try {
-      const response = await fetch(`/api/v1/domains/${subdomain}?isSubdomain=true`)
+      const response = await fetch(`${API_BASE_URL}/api/v1/domains/${encodeURIComponent(subdomain)}`)
+      console.log('Response:', response)
       if (!response.ok) {
         if (response.status === 404) {
           setError(errorMessages.domain_not_found)
