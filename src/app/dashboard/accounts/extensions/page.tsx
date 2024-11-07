@@ -4,7 +4,7 @@ import { ExtensionSkeleton } from "@/app/ui/skeleton"
 import dynamic from 'next/dynamic'
 import ExtensionTable from "@/app/ui/AllExtensionsTable"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000' || 'https://vgtpbx.dev'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 
 //const AddExtensionButton = dynamic(() => import('@/app/ui/buttons').then(mod => mod.AddExtensionButton), { ssr: false })
 //const DeleteExtensionButton = dynamic(() => import('@/app/ui/buttons').then(mod => mod.DeleteExtensionButton), { ssr: false })
