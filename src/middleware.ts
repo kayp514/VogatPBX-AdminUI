@@ -7,14 +7,14 @@ const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://firebase-a
 export async function middleware(request: NextRequest) {
   const host = request.headers.get('host');
   const subdomain = host?.split('.')[0];
-  const isSubdomain = subdomain && subdomain !== 'www' && host?.includes('vgtpbx.dev');
+  const isSubdomain = subdomain && subdomain !== 'www' && (host?.includes('vgtpbx.dev') || host?.includes('localhost'));
 
   const token = request.cookies.get('auth_token')?.value;
   const isRootLoginPage = request.nextUrl.pathname === '/login';
   const isCallbackPage = request.nextUrl.pathname === '/login';
   const isLoginPage = request.nextUrl.pathname === '/login';
 
-  if (isLoginPage || isCallbackPage) {
+  if (isLoginPage) {
     return NextResponse.next();
   }
 
