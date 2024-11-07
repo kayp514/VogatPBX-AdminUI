@@ -1,6 +1,10 @@
 import type { pbx_domains } from '@prisma/client'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
+const isDevelopment = process.env.NODE_ENV === 'development'
+
+const API_BASE_URL = isDevelopment 
+  ? 'http://localhost:3000' 
+  : process.env.NEXT_PUBLIC_API_URL || 'https://vgtpbx.dev'
 
 
 export async function getDomains(): Promise<pbx_domains[]> {
@@ -26,6 +30,7 @@ export async function getDomains(): Promise<pbx_domains[]> {
 
 export async function getDomain(domainId: string): Promise<pbx_domains | null> {
   try {
+    console.log('api base from getdomain lib page', API_BASE_URL)
     const response = await fetch(`${API_BASE_URL}/api/v1/domains/${domainId}`, {
       method: 'GET',
       headers: {

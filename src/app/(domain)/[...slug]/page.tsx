@@ -19,6 +19,7 @@ export default async function DomainPage({ params }: PageProps) {
   console.log('Path:', path)
   
   if (!domainId) {
+    console.log('no domainID found')
     notFound()
   }
 
@@ -26,6 +27,7 @@ export default async function DomainPage({ params }: PageProps) {
     const domainInfo = await getDomain(domainId)
 
     if (!domainInfo) {
+      console.log('no domainID found in getDomain')
       notFound()
     }
 

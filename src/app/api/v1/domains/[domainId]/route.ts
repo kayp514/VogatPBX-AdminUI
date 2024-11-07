@@ -32,7 +32,7 @@ export async function GET(
       };
 
     // Return the domain data
-    return NextResponse.json(response);
+    return NextResponse.json(domain);
   } catch (error) {
     console.error('Error fetching Domain:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

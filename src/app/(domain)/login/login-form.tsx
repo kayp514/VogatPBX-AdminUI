@@ -32,12 +32,17 @@ export default function LoginFormDomain() {
     }
     const hostname = window.location.hostname
     const extractedSubdomain = hostname.split('.')[0]
-    setSubdomain(extractedSubdomain)
+    setSubdomain(extractedSubdomain === 'localhost' ? '' : extractedSubdomain)
     validateSubdomain(extractedSubdomain)
   }, [searchParams])
 
   const validateSubdomain = async (subdomain: string) => {
     try {
+        if (subdomain === 'localhost') {
+            // Handle localhost case
+            setIsLoading(false)
+            return
+          }
       const response = await fetch(`${API_BASE_URL}/api/v1/domains/${encodeURIComponent(subdomain)}`)
       console.log('Response:', response)
       if (!response.ok) {

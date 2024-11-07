@@ -65,8 +65,8 @@ export async function middleware(request: NextRequest) {
 
       // Subdomain exists, check authentication
       if (!token && !isLoginPage) {
-        console.log('subdomain exists not token found')
-        return NextResponse.redirect(new URL(`/login?subdomain=${currentHost}`, request.url));
+        console.log('subdomain exists, no token found');
+        return NextResponse.redirect(new URL(`/login`, request.url));
       }
 
       // Authenticated or accessing login page, allow access
