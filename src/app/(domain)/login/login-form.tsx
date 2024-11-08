@@ -37,36 +37,13 @@ export default function LoginFormDomain() {
     const hostname = window.location.hostname
     const extractedSubdomain = hostname.split('.')[0]
     setSubdomain(extractedSubdomain === 'localhost' ? '' : extractedSubdomain)
-    validateSubdomain(extractedSubdomain)
+    //validateSubdomain(extractedSubdomain)
 
     console.log('Login page hostname:', hostname)
     console.log('Login page Exatra sub:', extractedSubdomain)
   }, [searchParams])
 
-  const validateSubdomain = async (subdomain: string) => {
-    try {
-        if (subdomain === 'localhost') {
-            // Handle localhost case
-            setIsLoading(false)
-            return
-          }
-      const response = await fetch(`${API_BASE_URL}/api/v1/domains/${encodeURIComponent(subdomain)}?isValid=true`)
-      console.log('Response:', response)
-      console.log('Response domain:', encodeURIComponent(subdomain))
-      if (!response.ok) {
-        if (response.status === 404) {
-          setError(errorMessages.domain_not_found)
-        } else {
-            throw new Error('Failed to validate subdomain')
-          }
-        }
-      } catch (error) {
-        console.error('Error validating subdomain:', error)
-        setError(errorMessages.default)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+
 
 
   const handleLogin = () => {
