@@ -49,6 +49,7 @@ export default function LoginFormDomain() {
           }
       const response = await fetch(`/api/v1/domains/${encodeURIComponent(subdomain)}`)
       console.log('Response:', response)
+      console.log('Response domain:', encodeURIComponent(subdomain))
       if (!response.ok) {
         if (response.status === 404) {
           setError(errorMessages.domain_not_found)
