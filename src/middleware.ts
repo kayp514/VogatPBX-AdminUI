@@ -11,7 +11,7 @@ export const config = {
 };
 
 export async function middleware(request: NextRequest) {
-  const hostname = request.headers.get('host') || 'localhost';
+  const hostname = request.headers.get('host') || '';
   const isLocalhost = hostname.includes('localhost');
 
   let currentHost;
