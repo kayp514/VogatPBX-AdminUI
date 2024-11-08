@@ -179,7 +179,7 @@ export default function AddDomainPage() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => router.push('/dashboard/settings/domains')}
+                  onClick={() => router.push('/dashboard/tenants/domains')}
                   className="w-full sm:w-auto"
                 >
                   Cancel
