@@ -38,7 +38,7 @@ export default function LoginFormDomain() {
 
 
   const handleLogin = () => {
-    if (error || isLoading) return
+    if (error) return
     const redirectUrl = searchParams.get('redirect') || '/dashboard'
     
     // Use window.location for client-side URL construction
