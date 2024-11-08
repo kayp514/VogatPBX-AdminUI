@@ -17,7 +17,7 @@ const nextConfig = {
                     value: '(?<subdomain>.+).vgtpbx.dev',
                 },
                 ],
-                destination: '/api/v1/domains/:subdomain/:path*',
+                destination: '/:path*',
             },
         ];
     },
