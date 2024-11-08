@@ -56,7 +56,16 @@ export async function middleware(request: NextRequest) {
   if (isSubdomain) {
     // Validate subdomain using the correct API path
     try {
-      const subdomainValidationResponse = await fetch(`${request.nextUrl.protocol}//${ROOT_DOMAIN}/api/v1/domains/${encodeURIComponent(currentHost)}?isValid=true`);
+      const subdomainValidationResponse = await fetch(`${request.nextUrl.protocol}//${ROOT_DOMAIN}/api/v1/domains/${encodeURIComponent(currentHost)}?isValid=true`,
+    {
+      headers: {
+        'Cache-Control': 'no-store',
+        'Host': ROOT_DOMAIN
+      },
+    }
+    );
+    console.log('Validation URL:', `https://${ROOT_DOMAIN}/api/v1/domains/${encodeURIComponent(currentHost)}?isValid=true`);
+    console.log('Response status:', subdomainValidationResponse.status);
       console.log('EncodeURI:', encodeURIComponent(currentHost))
 
       if (!subdomainValidationResponse.ok) {
