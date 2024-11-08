@@ -6,10 +6,10 @@ const prisma = prismaImport as PrismaClient
 
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ domainId: string }>}
+  context: { params: Promise<{ domainId: string }> }
 ) {
   const { domainId } = await context.params;
-  console.log('Domain ID from Route:', domainId)
+  const isValid = request.nextUrl.searchParams.get('isValid') === 'true';
 
   if (!domainId) {
     return NextResponse.json({ error: 'Domain ID is required' }, { status: 400 });
@@ -17,26 +17,21 @@ export async function GET(
 
   try {
     // Fetch the domain
-    let domain = await prisma.pbx_domains.findFirst({
-      where: { name: domainId }
+    const domain = await prisma.pbx_domains.findFirst({
+      where: isValid
+        ? { name: domainId }
+        : { OR: [{ id: domainId }, { name: domainId }] }
     });
-
-    // If not found by name, try to fetch by ID
-    if (!domain) {
-      domain = await prisma.pbx_domains.findUnique({
-        where: { id: domainId }
-      });
-    }
 
     if (!domain) {
       return NextResponse.json({ error: 'Domain not found' }, { status: 404 });
     }
 
-    const response = {
-      ...domain,
-      };
-
     // Return the domain data
+    const response = {
+    ...domain,
+    };
+
     return NextResponse.json(response);
   } catch (error) {
     console.error('Error fetching Domain:', error);
