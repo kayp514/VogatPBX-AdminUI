@@ -31,7 +31,7 @@ export async function getDomains(): Promise<pbx_domains[]> {
 export async function getDomain(domainId: string): Promise<pbx_domains | null> {
   try {
     console.log('api base from getdomain lib page', API_BASE_URL)
-    const response = await fetch(`/api/v1/domains/${domainId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/domains/${domainId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
