@@ -4,11 +4,9 @@ import { prisma as prismaImport} from '@/lib/prisma';
 
 const prisma = prismaImport as PrismaClient
 
-export const runtime = 'edge'
-
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ domainId: string }> }
+  context: { params: { domainId: string } }
 ) {
   const { domainId } = await context.params;
   console.log('Domain ID from Route:', domainId)
@@ -19,11 +17,16 @@ export async function GET(
 
   try {
     // Fetch the domain
-    const domain = await prisma.pbx_domains.findFirst({
-      where: domainId
-        ? { name: domainId }
-        : { OR: [{ id: domainId }, { name: domainId }] }
+    let domain = await prisma.pbx_domains.findFirst({
+      where: { name: domainId }
     });
+
+    // If not found by name, try to fetch by ID
+    if (!domain) {
+      domain = await prisma.pbx_domains.findUnique({
+        where: { id: domainId }
+      });
+    }
 
     if (!domain) {
       return NextResponse.json({ error: 'Domain not found' }, { status: 404 });
