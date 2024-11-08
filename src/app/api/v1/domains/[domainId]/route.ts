@@ -18,10 +18,9 @@ export async function GET(
   try {
     // Fetch the domain
     const domain = await prisma.pbx_domains.findFirst({
-      where: isValid
-        ? { name: domainId }
-        : { OR: [{ id: domainId }, { name: domainId }] }
+      where: { name: domainId }
     });
+
 
     if (!domain) {
       return NextResponse.json({ error: 'Domain not found' }, { status: 404 });
