@@ -4,7 +4,6 @@ import type { NextRequest } from 'next/server';
 const PROD_ROOT_DOMAIN = 'vgtpbx.dev';
 const DEV_ROOT_DOMAIN = 'localhost:3000';
 const ROOT_DOMAIN = process.env.NODE_ENV === 'development' ? DEV_ROOT_DOMAIN : PROD_ROOT_DOMAIN;
-const WWW_ROOT_DOMAIN = `www.${PROD_ROOT_DOMAIN}`;
 const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://firebase-auth-data.vercel.app';
 
 export const config = {
@@ -57,31 +56,20 @@ export async function middleware(request: NextRequest) {
   if (isSubdomain) {
     // Validate subdomain using the correct API path
     try {
-      const domains = [ROOT_DOMAIN, WWW_ROOT_DOMAIN];
-      let subdomainValidationResponse;
+      const subdomainValidationResponse = await fetch(`${request.nextUrl.protocol}//${ROOT_DOMAIN}/api/v1/domains/${encodeURIComponent(currentHost)}?isValid=true`,
+    {
+      headers: {
+        'Cache-Control': 'no-store',
+        'Host': ROOT_DOMAIN
+      },
+    }
+    );
+    console.log('Validation URL:', `${request.nextUrl.protocol}//${ROOT_DOMAIN}/api/v1/domains/${encodeURIComponent(currentHost)}?isValid=true`);
+    console.log('Response status:', subdomainValidationResponse.status);
+    console.log('EncodeURI:', encodeURIComponent(currentHost))
 
-      for (const domain of domains) {
-        subdomainValidationResponse = await fetch(
-          `https://${domain}/api/v1/domains/${encodeURIComponent(currentHost)}?isValid=true`,
-          {
-            headers: {
-              'Cache-Control': 'no-store',
-              'Host': domain
-            },
-          }
-        );
-
-        // Add more detailed logging
-        console.log('Validation URL:', `https://${domain}/api/v1/domains/${encodeURIComponent(currentHost)}?isValid=true`);
-        console.log('Response status:', subdomainValidationResponse.status);
-
-        if (subdomainValidationResponse.ok) {
-          break; // Exit the loop if we get a successful response
-        }
-      }
-
-      if (!subdomainValidationResponse || !subdomainValidationResponse.ok) {
-        console.log('Subdomain not found in subcheck');
+      if (!subdomainValidationResponse.ok) {
+        console.log('Domain not found in subcheck')
         return NextResponse.rewrite(new URL('/404', request.url));
       }
 

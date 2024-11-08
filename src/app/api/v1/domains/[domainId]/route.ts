@@ -23,6 +23,8 @@ export async function GET(
         : { OR: [{ id: domainId }, { name: domainId }] }
     });
 
+    console.log(domain)
+
     if (!domain) {
       return NextResponse.json({ error: 'Domain not found' }, { status: 404 });
     }
@@ -32,7 +34,7 @@ export async function GET(
     ...domain,
     };
 
-    return NextResponse.json(response);
+    return NextResponse.json(domain);
   } catch (error) {
     console.error('Error fetching Domain:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
