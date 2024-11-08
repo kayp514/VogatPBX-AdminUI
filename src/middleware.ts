@@ -69,8 +69,12 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL(`/login`, request.url));
       }
 
+      if (isLoginPage) {
+        return NextResponse.next();
+      }
+
       // Authenticated or accessing login page, allow access
-      return NextResponse.rewrite(new URL(`/domain/${currentHost}${request.nextUrl.pathname}`, request.url));
+      return NextResponse.rewrite(new URL(`/${request.nextUrl.pathname}`, request.url));
     } catch (error) {
       console.error('Error validating subdomain:', error);
       return NextResponse.rewrite(new URL('/404', request.url));
