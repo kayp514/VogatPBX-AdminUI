@@ -56,7 +56,7 @@ export async function middleware(request: NextRequest) {
   if (isSubdomain) {
     // Validate subdomain using the correct API path
     try {
-      const subdomainValidationResponse = await fetch(`${request.nextUrl.origin}/api/v1/domains/${encodeURIComponent(currentHost)}`);
+      const subdomainValidationResponse = await fetch(`${request.nextUrl.origin}/api/v1/domains/${encodeURIComponent(currentHost)}?isValid=true`);
       console.log('EncodeURI:', encodeURIComponent(currentHost))
 
       if (!subdomainValidationResponse.ok) {
