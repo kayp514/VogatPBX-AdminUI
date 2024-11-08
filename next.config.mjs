@@ -14,7 +14,7 @@ const nextConfig = {
                 has: [
                 {
                     type: 'host',
-                    value: '(?<subdomain>.+).vgtpbx.dev',
+                    value: '(?<domain>.+).vgtpbx.dev',
                 },
                 ],
                 destination: '/:path*',

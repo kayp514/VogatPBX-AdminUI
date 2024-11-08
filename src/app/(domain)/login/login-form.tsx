@@ -34,39 +34,7 @@ export default function LoginFormDomain() {
     if (errorCode) {
       setError(errorMessages[errorCode as keyof typeof errorMessages] || errorMessages.default)
     }
-    const hostname = window.location.hostname
-    const extractedSubdomain = hostname.split('.')[0]
-    setSubdomain(extractedSubdomain === 'localhost' ? '' : extractedSubdomain)
-    validateSubdomain(extractedSubdomain)
-
-    console.log('Login page hostname:', hostname)
-    console.log('Login page Exatra sub:', extractedSubdomain)
   }, [searchParams])
-
-  const validateSubdomain = async (subdomain: string) => {
-    try {
-        if (subdomain === 'localhost') {
-            // Handle localhost case
-            setIsLoading(false)
-            return
-          }
-      const response = await fetch(`/api/v1/domains/${subdomain}?isValid=true`)
-      console.log('Response:', response)
-      console.log('Response domain:', encodeURIComponent(subdomain))
-      if (!response.ok) {
-        if (response.status === 404) {
-          setError(errorMessages.domain_not_found)
-        } else {
-            throw new Error('Failed to validate subdomain')
-          }
-        }
-      } catch (error) {
-        console.error('Error validating subdomain:', error)
-        setError(errorMessages.default)
-      } finally {
-        setIsLoading(false)
-      }
-    }
 
 
   const handleLogin = () => {
@@ -87,14 +55,6 @@ export default function LoginFormDomain() {
     
     // Use window.location.href for full page navigation
     window.location.href = loginUrl
-  }
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading...</p>
-      </div>
-    )
   }
 
   return (
