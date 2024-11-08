@@ -9,7 +9,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { LogIn, AlertCircle } from "lucide-react"
 
 const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://firebase-auth-data.vercel.app'
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
+const isDevelopment = process.env.NODE_ENV === 'development'
+
+const API_BASE_URL = isDevelopment 
+  ? 'http://localhost:3000' 
+  : process.env.NEXT_PUBLIC_API_URL || 'https://vgtpbx.dev'
 
 const errorMessages = {
   'no_token': 'Authentication failed. Please try again.',

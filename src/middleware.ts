@@ -18,7 +18,8 @@ export async function middleware(request: NextRequest) {
   if (isLocalhost) {
     currentHost = hostname.split('.')[0] === 'localhost' ? '' : hostname.split('.')[0];
   } else {
-    currentHost = hostname.replace(`.${PROD_ROOT_DOMAIN}`, '');
+    const hostWithoutWWW = hostname.replace(/^www\./, '');
+    currentHost = hostWithoutWWW.replace(`.${PROD_ROOT_DOMAIN}`, '');
   }
 
   // Define allowed hosts
