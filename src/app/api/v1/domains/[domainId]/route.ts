@@ -23,8 +23,6 @@ export async function GET(
         : { OR: [{ id: domainId }, { name: domainId }] }
     });
 
-    console.log(domain)
-
     if (!domain) {
       return NextResponse.json({ error: 'Domain not found' }, { status: 404 });
     }

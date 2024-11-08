@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Define allowed hosts
-  const allowedHosts = [DEV_ROOT_DOMAIN, PROD_ROOT_DOMAIN, `www.${PROD_ROOT_DOMAIN}`, `vogatpbx-adminui-8sq9bq6ws-coffeeconnect.vercel.app`];
+  const allowedHosts = [DEV_ROOT_DOMAIN, PROD_ROOT_DOMAIN, `www.${PROD_ROOT_DOMAIN}`];
 
   console.log('Root Domain:', ROOT_DOMAIN);
   console.log('Current Host:', currentHost);

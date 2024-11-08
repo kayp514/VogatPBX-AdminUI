@@ -38,6 +38,9 @@ export default function LoginFormDomain() {
     const extractedSubdomain = hostname.split('.')[0]
     setSubdomain(extractedSubdomain === 'localhost' ? '' : extractedSubdomain)
     validateSubdomain(extractedSubdomain)
+
+    console.log('Login page hostname:', hostname)
+    console.log('Login page Exatra sub:', extractedSubdomain)
   }, [searchParams])
 
   const validateSubdomain = async (subdomain: string) => {
