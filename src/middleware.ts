@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 const PROD_ROOT_DOMAIN = 'vgtpbx.dev';
 const DEV_ROOT_DOMAIN = 'localhost:3000';
-const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN || PROD_ROOT_DOMAIN;
+const ROOT_DOMAIN = process.env.NODE_ENV === 'development' ? DEV_ROOT_DOMAIN : PROD_ROOT_DOMAIN;
 const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://firebase-auth-data.vercel.app';
 
 export const config = {
@@ -56,7 +56,7 @@ export async function middleware(request: NextRequest) {
   if (isSubdomain) {
     // Validate subdomain using the correct API path
     try {
-      const subdomainValidationResponse = await fetch(`${request.nextUrl.origin}/api/v1/domains/${encodeURIComponent(currentHost)}?isValid=true`);
+      const subdomainValidationResponse = await fetch(`${request.nextUrl.protocol}//${ROOT_DOMAIN}/api/v1/domains/${encodeURIComponent(currentHost)}?isValid=true`);
       console.log('EncodeURI:', encodeURIComponent(currentHost))
 
       if (!subdomainValidationResponse.ok) {
