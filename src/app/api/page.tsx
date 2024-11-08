@@ -6,12 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
-const isDevelopment = process.env.NODE_ENV === 'development'
-
-const API_BASE_URL = isDevelopment 
-  ? 'http://localhost:3000' 
-  : process.env.NEXT_PUBLIC_API_URL || 'https://vgtpbx.dev'
-
 type ApiEndpoint = {
   endpoint: string;
   description: string;
@@ -27,7 +21,7 @@ export default function ApiRootView() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/v1`)
+    fetch('/api/v1')
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)

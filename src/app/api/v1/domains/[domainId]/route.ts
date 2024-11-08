@@ -4,6 +4,8 @@ import { prisma as prismaImport} from '@/lib/prisma';
 
 const prisma = prismaImport as PrismaClient
 
+export const runtime = 'edge'
+
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ domainId: string }> }
