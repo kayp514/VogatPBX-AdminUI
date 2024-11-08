@@ -6,7 +6,7 @@ const prisma = prismaImport as PrismaClient
 
 export async function GET(
   request: NextRequest,
-  context: { params: { domainId: string } }
+  context: { params: Promise<{ domainId: string }>}
 ) {
   const { domainId } = await context.params;
   console.log('Domain ID from Route:', domainId)
