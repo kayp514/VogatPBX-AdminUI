@@ -40,6 +40,7 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get('auth_token')?.value;
   const isAuthCallback = request.nextUrl.pathname === '/auth/callback';
   const isLoginPage = request.nextUrl.pathname === '/login';
+  const isSignup = request.nextUrl.pathname === '/signup';
   const isRootPath = request.nextUrl.pathname === '/';
 
   // Allow access to auth callback without a token
@@ -48,7 +49,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Handle root domain and localhost
-  if (isRootDomain && isRootPath) {
+  if (isRootDomain && isRootPath && isSignup) {
     return NextResponse.next(); // Show landing page
   }
 
@@ -92,7 +93,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // For authenticated routes on root domain, localhost, or subdomains
-  if (!isRootPath && !token && !isLoginPage) {
+  if (!isRootPath && !token && !isLoginPage && !isSignup) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 

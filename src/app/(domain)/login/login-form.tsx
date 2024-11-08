@@ -51,7 +51,7 @@ export default function LoginFormDomain() {
     
     // Construct the login URL
     const encodedRedirect = encodeURIComponent(redirectUrl)
-    const loginUrl = `${AUTH_APP_URL}/api/auth/login?callback=${encodedCallback}&redirect=${encodedRedirect}&subdomain=${subdomain}`
+    const loginUrl = `${AUTH_APP_URL}/api/auth/login?callback=${encodedCallback}&redirect=${encodedRedirect}`
     
     // Use window.location.href for full page navigation
     window.location.href = loginUrl
