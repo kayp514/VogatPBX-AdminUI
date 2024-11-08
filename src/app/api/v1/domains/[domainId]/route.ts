@@ -6,9 +6,9 @@ const prisma = prismaImport as PrismaClient
 
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ domainId: string }> }
+  {params}: { params: Promise<{ domainId: string }> }
 ) {
-  const { domainId } = await context.params;
+  const domainId  = (await params).domainId;
   const isValid = request.nextUrl.searchParams.get('isValid') === 'true';
 
   if (!domainId) {
