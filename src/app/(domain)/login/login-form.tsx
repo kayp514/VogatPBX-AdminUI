@@ -8,8 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { LogIn, AlertCircle } from "lucide-react"
 
-const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://firebase-auth-data.vercel.app'
+const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://firebase-auth-data.vercel.app';
 const isDevelopment = process.env.NODE_ENV === 'development'
+const appId = process.env.NEXT_PUBLIC_APP_ID || ''
+const clientSecretKey = process.env.NEXT_PUBLIC_APP_KEY || ''
 
 const API_BASE_URL = isDevelopment 
   ? 'http://localhost:3000' 
@@ -50,7 +52,7 @@ export default function LoginFormDomain() {
     
     // Construct the login URL
     const encodedRedirect = encodeURIComponent(redirectUrl)
-    const loginUrl = `${AUTH_APP_URL}/api/auth/login?callback=${encodedCallback}&redirect=${encodedRedirect}`
+    const loginUrl = `${AUTH_APP_URL}/external-auth/login?callback=${encodedCallback}&redirect=${encodedRedirect}&appId=${encodeURIComponent(appId)}&clientSecret=${encodeURIComponent(clientSecretKey)}`;
     
     // Use window.location.href for full page navigation
     window.location.href = loginUrl
