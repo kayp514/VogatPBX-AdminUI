@@ -10,6 +10,31 @@ export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };
 
+async function verifyToken(token: string): Promise<{ valid: boolean; userData?: any }> {
+  try {
+    const res = await fetch(`${AUTH_APP_URL}/api/auth/verify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token }),
+    });
+
+    if (!res.ok) {
+      throw new Error('Token verification failed');
+    }
+
+    const data = await res.json();
+    return { 
+      valid: data.valid, 
+      userData: data.valid ? data.uid : undefined
+    };
+  } catch (error) {
+    console.error('Token verification error:', error);
+    return { valid: false };
+  }
+}
+
 export async function middleware(request: NextRequest) {
   const hostname = request.headers.get('host') || '';
   const isLocalhost = hostname.includes('localhost');
@@ -55,7 +80,6 @@ export async function middleware(request: NextRequest) {
 
   // Handle subdomain logic
   if (isSubdomain) {
-    // Validate subdomain using the correct API path
     try {
       const subdomainValidationResponse = await fetch(`${request.nextUrl.protocol}//${ROOT_DOMAIN}/api/v1/domains/${encodeURIComponent(currentHost)}?isValid=true`,
     {
@@ -75,17 +99,34 @@ export async function middleware(request: NextRequest) {
       }
 
       // Subdomain exists, check authentication
-      if (!token && !isLoginPage) {
+
+      if (isLoginPage) {
+        return NextResponse.next();
+      }
+
+      if (!token) {
         console.log('subdomain exists, no token found');
         return NextResponse.redirect(new URL(`/login`, request.url));
       }
 
-      if (isLoginPage || token) {
-        return NextResponse.next();
-      }
+        const { valid, userData } = await verifyToken(token);
+        console.log('token verified:', valid)
+        console.log('userData:', userData)
 
-      // Authenticated or accessing login page, allow access
-      return NextResponse.rewrite(new URL(`/${request.nextUrl.pathname}`, request.url));
+        if (!valid) {
+          const response = NextResponse.redirect(new URL('/login', request.url));
+          response.cookies.delete('auth_token');
+          return response;
+        }
+
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.set('x-user-id', userData.id);
+
+        return NextResponse.next({
+          request: {
+            headers: requestHeaders,
+          },
+        });
     } catch (error) {
       console.error('Error validating subdomain:', error);
       return NextResponse.rewrite(new URL('/404', request.url));
@@ -99,36 +140,25 @@ export async function middleware(request: NextRequest) {
 
   // Token verification for authenticated routes
   if (token) {
-    try {
-      const res = await fetch(`${AUTH_APP_URL}/api/auth/verify`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ token }),
-      });
+      const { valid, userData } = await verifyToken(token);
+      console.log('token verified:', valid)
+      console.log('userData:', userData)
 
-      const data = await res.json();
-
-      if (!data.valid) {
+      if (!valid) {
         const response = NextResponse.redirect(new URL('/login', request.url));
         response.cookies.delete('auth_token');
         return response;
       }
 
       const requestHeaders = new Headers(request.headers);
-      requestHeaders.set('x-user-id', data.uid);
-
+      requestHeaders.set('x-user-id', userData.id);
+  
       return NextResponse.next({
         request: {
           headers: requestHeaders,
         },
       });
-    } catch (error) {
-      console.error('Authentication error:', error);
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-  }
+    } 
 
   return NextResponse.next();
 }
