@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { LogIn, AlertCircle } from "lucide-react"
 
-const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://firebase-auth-data.vercel.app';
+const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://ternsecure.com';
 const isDevelopment = process.env.NODE_ENV === 'development'
 const appId = process.env.NEXT_PUBLIC_APP_ID || ''
 const clientSecretKey = process.env.NEXT_PUBLIC_APP_KEY || ''

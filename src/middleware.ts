@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 const PROD_ROOT_DOMAIN = 'vgtpbx.dev';
 const DEV_ROOT_DOMAIN = 'localhost:3000';
 const ROOT_DOMAIN = process.env.NODE_ENV === 'development' ? DEV_ROOT_DOMAIN : PROD_ROOT_DOMAIN;
-const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://firebase-auth-data.vercel.app';
+const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://ternsecure.com';
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
