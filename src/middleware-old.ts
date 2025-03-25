@@ -62,9 +62,9 @@ export async function middleware(request: NextRequest) {
   const isRootDomain = hostname === PROD_ROOT_DOMAIN || hostname === `www.${PROD_ROOT_DOMAIN}` || hostname === DEV_ROOT_DOMAIN;
   const isSubdomain = !isRootDomain && currentHost !== '';
 
-  const token = request.cookies.get('auth_token')?.value;
+  const token = request.cookies.get('_session_cookie')?.value;
   const isAuthCallback = request.nextUrl.pathname === '/auth/callback';
-  const isLoginPage = request.nextUrl.pathname === '/login';
+  const isLoginPage = request.nextUrl.pathname === '/sign-in';
   const isSignup = request.nextUrl.pathname === '/signup';
   const isRootPath = request.nextUrl.pathname === '/';
 
@@ -106,7 +106,7 @@ export async function middleware(request: NextRequest) {
 
       if (!token) {
         console.log('subdomain exists, no token found');
-        return NextResponse.redirect(new URL(`/login`, request.url));
+        return NextResponse.redirect(new URL(`/sign-in`, request.url));
       }
 
         const { valid, userData } = await verifyToken(token);
@@ -114,8 +114,8 @@ export async function middleware(request: NextRequest) {
         console.log('userData:', userData)
 
         if (!valid) {
-          const response = NextResponse.redirect(new URL('/login', request.url));
-          response.cookies.delete('auth_token');
+          const response = NextResponse.redirect(new URL('/sign-in', request.url));
+          response.cookies.delete('_session_cookie');
           return response;
         }
 
@@ -135,7 +135,7 @@ export async function middleware(request: NextRequest) {
 
   // For authenticated routes on root domain, localhost, or subdomains
   if (!isRootPath && !token && !isLoginPage && !isSignup) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
   // Token verification for authenticated routes
@@ -145,8 +145,8 @@ export async function middleware(request: NextRequest) {
       console.log('userData:', userData)
 
       if (!valid) {
-        const response = NextResponse.redirect(new URL('/login', request.url));
-        response.cookies.delete('auth_token');
+        const response = NextResponse.redirect(new URL('/sign-in', request.url));
+        response.cookies.delete('_session_cookie');
         return response;
       }
 
