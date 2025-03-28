@@ -1202,7 +1202,7 @@ model pbx_domain_settings {
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model pbx_domains {
-  id                     String                   @id @db.Uuid
+  id                     String                   @id
   name                   String                   @unique @db.VarChar(128)
   enabled                String                   @db.VarChar(8)
   description            String?                  @db.VarChar(128)
