@@ -4,8 +4,8 @@ import { useState, useEffect } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
-import { GroupDetailsModal } from "@/app/ui/group-details-modal"
-import { GroupsSkeleton } from "@/app/ui/skeleton"
+import { GroupDetailsModal } from "@/components/group-details-modal"
+import { GroupsSkeleton } from "@/components/skeleton"
 
 type Groups = {
   id: number;

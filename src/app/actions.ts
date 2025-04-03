@@ -67,7 +67,7 @@ export async function createDatabaseUser(firebaseUser: FirebaseAuthUser): Promis
   }
 
   try {
-    const existingTenant = await prisma.pbx_domains.findUnique({
+    const existingTenant = await prisma.auth_tenant.findUnique({
         where: { id: DEFAULT_TENANT_ID },
       })
   
@@ -89,15 +89,15 @@ export async function createDatabaseUser(firebaseUser: FirebaseAuthUser): Promis
     const userInput: DatabaseUserInput = {
       uid: firebaseUser.uid,
       email: firebaseUser.email,
-      name: firebaseUser.displayName ?? null,
+      displayName: firebaseUser.displayName ?? null,
       avatar: firebaseUser.photoURL ?? null,
       tenantId: firebaseUser.tenantId || 'default',
       isAdmin: true,
       disabled: firebaseUser.disabled ?? false,
       phoneNumber: firebaseUser.phoneNumber ?? null,
       emailVerified: firebaseUser.emailVerified ?? false,
-      CreatedAt: firebaseUser.metadata.creationTime ? new Date(firebaseUser.metadata.creationTime) : new Date(),
-      LastSignInAt: firebaseUser.metadata.lastSignInTime 
+      createdAt: firebaseUser.metadata.creationTime ? new Date(firebaseUser.metadata.creationTime) : new Date(),
+      lastSignInAt: firebaseUser.metadata.lastSignInTime 
         ? new Date(firebaseUser.metadata.lastSignInTime)
         : new Date(),
     }
@@ -108,7 +108,7 @@ export async function createDatabaseUser(firebaseUser: FirebaseAuthUser): Promis
 
     if (!user) {
         throw new Error("No user returned from database creation")
-      }
+    }
 
     return {
       success: true,
@@ -170,12 +170,12 @@ export async function verifyDatabaseUser(uid: string, tenantId: string): Promise
       };
     } else {
       
-    dbUser = await prisma.users.findUnique({
+    dbUser = await prisma.auth_user.findUnique({
       where: { uid },
       select: {
         uid: true,
         email: true,
-        name: true,
+        displayName: true,
         avatar: true,
         tenantId: true,
         isAdmin: true,

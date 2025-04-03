@@ -5,7 +5,6 @@ import { useParams } from "next/navigation"
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
@@ -23,7 +22,7 @@ import { toast } from '@/hooks/use-toast'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import MediaCodecTable from '@/app/ui/media-codec-options'
+import MediaCodecTable from '@/components/media-codec-options'
 
 const formSchema = z.object({
   // General

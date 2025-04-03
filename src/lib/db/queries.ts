@@ -24,34 +24,44 @@ export async function createUser(input: DatabaseUserInput | null) {
       const sanitizedData = {
           uid: input.uid,
           email: input.email.toLowerCase(),
-          name: input.name,
+          displayName: input.displayName,
+          firstName: input.firstName,
+          lastName: input.lastName,
           avatar: input.avatar,
           tenantId: input.tenantId,
+          isSuperuser: input.isSuperuser,
           isAdmin: input.isAdmin,
+          isStaff: input.isStaff,
           phoneNumber: input.phoneNumber,
           emailVerified: input.emailVerified,
-          CreatedAt: input.CreatedAt,
-          LastSignInAt: input.LastSignInAt,
+          disabled: input.disabled,
+          createdAt: input.createdAt,
+          lastSignInAt: input.lastSignInAt,
           updatedAt: new Date(),
         }
   
       console.log("user: Cleaned user data:", sanitizedData)
   
   
-      const user = await prisma.users.create({
+      const user = await prisma.auth_user.create({
         data: sanitizedData,
         select: {
           uid: true,
           email: true,
-          name: true,
+          displayName: true,
+          firstName: true,
+          lastName: true,
           avatar: true,
           tenantId: true,
+          isSuperuser: true,
           isAdmin: true,
+          isStaff: true,
           phoneNumber: true,
           emailVerified: true,
+          disabled: true,
           updatedAt: true,
-          CreatedAt: true,
-          LastSignInAt: true,
+          createdAt: true,
+          lastSignInAt: true,
         },
       })
   
@@ -87,7 +97,7 @@ export async function verifyDatabaseUser(uid: string): Promise<{
     user?: {
       uid: string;
       email: string;
-      name: string | null;
+      displayName: string | null;
       tenantId: string;
       isAdmin: boolean;
       emailVerified: boolean;
@@ -99,12 +109,12 @@ export async function verifyDatabaseUser(uid: string): Promise<{
     };
   }> {
     try {
-      const dbUser = await prisma.users.findUnique({
+      const dbUser = await prisma.auth_user.findUnique({
         where: { uid },
         select: {
           uid: true,
           email: true,
-          name: true,
+          displayName: true,
           tenantId: true,
           isAdmin: true,
           emailVerified: true,

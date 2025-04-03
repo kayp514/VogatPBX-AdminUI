@@ -19,13 +19,11 @@ async function ensureDirectoryExists(filePath: string): Promise<void> {
 
 async function main() {
   const tables = [
-    'django_content_type',
     'auth_group',
     'auth_permission',
     'auth_user',
     'auth_user_groups',
     'authtoken_token',
-    'django_admin_log',
     'pbx_menus',
     'pbx_menu_items',
     'pbx_menu_item_groups',

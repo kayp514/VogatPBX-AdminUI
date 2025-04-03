@@ -1,7 +1,8 @@
 'use client'
 import * as React from "react"
+import { useState } from "react"
 import { usePathname } from "next/navigation"
-import { SidebarComponent } from "../ui/sidebar"
+import { SidebarComponent } from "../../components/sidebar"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,18 +11,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Bell, User, ChevronRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useMemo } from "react"
+import { ChevronRight } from "lucide-react"
+import { FlushCacheButton, ReloadAclButton, ReloadXmlButton, RefreshButton } from "@/components/buttons"
 
 const segmentsWithoutPages = ['settings', 'accounts', 'switch', 'monitoring', 'users-and-auth', 'tenants']
 
@@ -50,6 +41,24 @@ const hasOwnPage = (segment: string, index: number, segments: string[]) => {
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
+  const [isLoading, setIsLoading] = useState<Record<string, boolean>>({
+    flushCache: false,
+    reloadAcl: false,
+    reloadXml: false,
+    refresh: false,
+  })
+  
+
+  const handleAction = (action: string) => {
+    setIsLoading({ ...isLoading, [action]: true })
+
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading({ ...isLoading, [action]: false })
+      console.log(`Action triggered: ${action}`)
+    }, 1000)
+  }
+
   const breadcrumbs = React.useMemo(() => {
     const pathSegments = pathname.split("/").filter(Boolean)
     if (pathSegments.length === 0) {
@@ -70,7 +79,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <SidebarComponent />
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="h-16 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6">
-        <Breadcrumb>
+          <Breadcrumb>
             <BreadcrumbList>
               {breadcrumbs.map((crumb, index) => (
                 <React.Fragment key={crumb.href}>
@@ -99,37 +108,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               )}
             </BreadcrumbList>
           </Breadcrumb>
-          <div className="flex items-center gap-4">
-            <Bell className="h-5 w-5 cursor-pointer" />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="/placeholder.svg?height=32&width=32" alt="User" />
-                    <AvatarFallback>TC</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">John Doe</p>
-                    <p className="text-xs leading-none text-muted-foreground">john@example.com</p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Bell className="mr-2 h-4 w-4" />
-                  <span>Notifications</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Log out</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          
+          <div className="flex items-center gap-1 md:gap-2 ml-2 flex-shrink-0">
+            <FlushCacheButton isLoading={isLoading.flushCache} onClick={() => handleAction("flushCache")} />
+            <ReloadAclButton isLoading={isLoading.reloadAcl} onClick={() => handleAction("reloadAcl")} />
+            <ReloadXmlButton isLoading={isLoading.reloadXml} onClick={() => handleAction("reloadXml")} />
+            <RefreshButton isLoading={isLoading.refresh} onClick={() => handleAction("refresh")} />
           </div>
         </header>
         <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">

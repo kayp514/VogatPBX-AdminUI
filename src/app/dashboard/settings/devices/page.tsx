@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
-import { DeviceSkeleton } from "@/app/ui/skeleton"
+import { DeviceSkeleton } from "@/components/skeleton"
 
 
 // This would typically come from an API or database

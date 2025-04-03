@@ -1,8 +1,18 @@
 'use client'
 
+import type React from "react"
 import { useRouter } from 'next/navigation'
 import { Button as ShadcnButton } from "@/components/ui/button"
-import { PlusCircle, Trash2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { FileCode, RefreshCw, Shield, Trash2, PlusCircle } from "lucide-react"
+import { cn } from "@/lib/utils"
+
+interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  isLoading?: boolean
+  tooltipText: string
+  icon: React.ElementType
+}
 
 type ButtonProps = React.ComponentProps<typeof ShadcnButton> & {
   onClick: () => void;
@@ -117,3 +127,71 @@ export function SaveButton({ onClick }: { onClick: () => void }) {
     </CustomButton>
   )
 }
+
+
+
+export function ActionButton({
+  isLoading = false,
+  tooltipText,
+  icon: Icon,
+  className,
+  disabled,
+  ...props
+}: ActionButtonProps) {
+  return (
+    <TooltipProvider delayDuration={300}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            className={cn("h-8 w-8", className)}
+            disabled={isLoading || disabled}
+            {...props}
+          >
+            {isLoading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Icon className="h-4 w-4" />}
+            <span className="sr-only">{tooltipText}</span>
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">
+          <p>{tooltipText}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}
+
+
+export function FlushCacheButton({
+  isLoading,
+  onClick,
+  ...props
+}: Omit<ActionButtonProps, "tooltipText" | "icon"> & { onClick?: () => void }) {
+  return <ActionButton tooltipText="Flush Cache" icon={Trash2} isLoading={isLoading} onClick={onClick} {...props} />
+}
+
+
+export function ReloadAclButton({
+  isLoading,
+  onClick,
+  ...props
+}: Omit<ActionButtonProps, "tooltipText" | "icon"> & { onClick?: () => void }) {
+  return <ActionButton tooltipText="Reload ACL" icon={Shield} isLoading={isLoading} onClick={onClick} {...props} />
+}
+
+export function ReloadXmlButton({
+  isLoading,
+  onClick,
+  ...props
+}: Omit<ActionButtonProps, "tooltipText" | "icon"> & { onClick?: () => void }) {
+  return <ActionButton tooltipText="Reload XML" icon={FileCode} isLoading={isLoading} onClick={onClick} {...props} />
+}
+
+export function RefreshButton({
+  isLoading,
+  onClick,
+  ...props
+}: Omit<ActionButtonProps, "tooltipText" | "icon"> & { onClick?: () => void }) {
+  return <ActionButton tooltipText="Refresh" icon={RefreshCw} isLoading={isLoading} onClick={onClick} {...props} />
+}
+

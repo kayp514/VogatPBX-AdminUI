@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Trash2, Plus, Save, RotateCcw } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { SipDomainSkeleton, SipSettingSkeleton } from "@/app/ui/skeleton"
+import { SipDomainSkeleton, SipSettingSkeleton } from "@/components/skeleton"
 import { Skeleton } from "@/components/ui/skeleton"
 
 type Setting = {

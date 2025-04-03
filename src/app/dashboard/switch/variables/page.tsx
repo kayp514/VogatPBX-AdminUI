@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Check, X, AlertCircle } from 'lucide-react'
-import { VariablesPageSkeleton } from '@/app/ui/skeleton'
+import { VariablesPageSkeleton } from '@/components/skeleton'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 type Variable = {

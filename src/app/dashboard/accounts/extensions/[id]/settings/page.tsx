@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { VariablesPageSkeleton } from '@/app/ui/skeleton'
+import { VariablesPageSkeleton } from '@/components/skeleton'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from "@/lib/utils"
 import { Save, RotateCcw } from "lucide-react"

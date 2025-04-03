@@ -6,11 +6,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
-import { UserSkeleton } from "@/app/ui/skeleton"
+import { UserSkeleton } from "@/components/skeleton"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { User, CheckCircle2, XCircle } from "lucide-react"
-import { UserAddDialog } from "@/app/ui/userAddDialog"
+import { UserAddDialog } from "@/components/userAddDialog"
 
 
 type Users = {

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
-import { AccessControlDialog } from "@/app/ui/accesscontroladd-dialog"
+import { AccessControlDialog } from "@/components/accesscontroladd-dialog"
 import { toast } from "@/hooks/use-toast"
 
 type AccessControl = {

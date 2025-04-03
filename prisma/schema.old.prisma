@@ -16,108 +16,138 @@ model auth_group {
   pbx_device_vendor_function_groups pbx_device_vendor_function_groups[]
   pbx_menu_item_groups              pbx_menu_item_groups[]
 
-  @@index([name], map: "auth_group_name_idx")
+  @@index([name], map: "auth_group_name_a6ea08ec_like")
 }
 
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model auth_group_permissions {
+  id              BigInt          @id @default(autoincrement())
+  group_id        Int
+  permission_id   Int
+  auth_permission auth_permission @relation(fields: [permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_group_permissio_permission_id_84c5c92e_fk_auth_perm")
+  auth_group      auth_group      @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_group_permissions_group_id_b120cbf9_fk_auth_group_id")
+
+  @@unique([group_id, permission_id], map: "auth_group_permissions_group_id_permission_id_0cd325b0_uniq")
+  @@index([group_id], map: "auth_group_permissions_group_id_b120cbf9")
+  @@index([permission_id], map: "auth_group_permissions_permission_id_84c5c92e")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model auth_permission {
   id                         Int                          @id @default(autoincrement())
   name                       String                       @db.VarChar(255)
+  content_type_id            Int
   codename                   String                       @db.VarChar(100)
   auth_group_permissions     auth_group_permissions[]
+  django_content_type        django_content_type          @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_permission_content_type_id_2f476e4b_fk_django_co")
   auth_user_user_permissions auth_user_user_permissions[]
 
-  @@unique([codename], map: "auth_permission_codename_unique")
-}
-
-model auth_group_permissions {
-  id              BigInt          @id @default(autoincrement())
-  groupId         Int            
-  permissionId    Int             
-  auth_permission auth_permission @relation(fields: [permissionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  auth_group      auth_group      @relation(fields: [groupId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-
-  @@unique([groupId, permissionId])
-  @@index([groupId])
-  @@index([permissionId])
-}
-
-model auth_tenant {
-  id          String        @id @db.VarChar(50)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  name        String        @unique @db.VarChar(100)
-  domain      String        @unique @db.VarChar(100)
-  description String?       @db.VarChar(500)
-  logo        String?       @db.VarChar(255)
-  plan        String        @default("basic") @db.VarChar(20)
-  maxUsers    Int           @default(5)
-  isActive    Boolean       @default(true)
-  features    Json?
-  users       auth_user[]
-  pbxDomains  pbx_domains[]
-
-  @@map("tenants")
+  @@unique([content_type_id, codename], map: "auth_permission_content_type_id_codename_01ab375a_uniq")
+  @@index([content_type_id], map: "auth_permission_content_type_id_2f476e4b")
 }
 
 model auth_user {
-  uid                        String                       @id @unique @db.VarChar(50)
-  updatedAt                  DateTime                     @updatedAt
-  email                      String                       @unique @db.VarChar(255)
-  displayName                String?                      @db.VarChar(100)
-  firstName                  String?                      @db.VarChar(150)
-  lastName                   String?                      @db.VarChar(150)
-  avatar                     String?                      @db.VarChar(255)
-  phoneNumber                String?                      @db.VarChar(20)
-  isSuperuser               Boolean
-  isAdmin                   Boolean                      
-  isStaff                   Boolean
-  emailVerified             Boolean                      @default(false)
-  disabled                  Boolean
-  tenantId                  String                       @db.VarChar(50)
-  createdAt                 DateTime?
-  lastSignInAt              DateTime?                     
-  auth_tenant               auth_tenant                  @relation(fields: [tenantId], references: [id])
-  auth_user_groups          auth_user_groups[]
-  auth_user_user_permissions  auth_user_user_permissions[]
-  authtoken_token                 authtoken_token?
+  id                         Int                          @id @default(autoincrement())
+  password                   String                       @db.VarChar(128)
+  last_login                 DateTime?                    @db.Timestamptz(6)
+  is_superuser               Boolean
+  username                   String                       @unique @db.VarChar(150)
+  first_name                 String                       @db.VarChar(150)
+  last_name                  String                       @db.VarChar(150)
+  email                      String                       @db.VarChar(254)
+  is_staff                   Boolean
+  is_active                  Boolean
+  date_joined                DateTime                     @db.Timestamptz(6)
+  external_uuid              String?                      @db.VarChar(255)
+  auth_user_groups           auth_user_groups[]
+  auth_user_user_permissions auth_user_user_permissions[]
+  authtoken_token            authtoken_token?
+  django_admin_log           django_admin_log[]
   pbx_users                  pbx_users?
 
-  @@index([tenantId])
+  @@index([username], map: "auth_user_username_6821ab7c_like")
 }
 
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model auth_user_groups {
   id         BigInt     @id @default(autoincrement())
-  uid        String     
-  groupId    Int        
-  auth_group auth_group @relation(fields: [groupId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  auth_user  auth_user  @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction)
+  user_id    Int
+  group_id   Int
+  auth_group auth_group @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_user_groups_group_id_97559544_fk_auth_group_id")
+  auth_user  auth_user  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_user_groups_user_id_6a12ed8b_fk_auth_user_id")
 
-  @@unique([uid, groupId])
-  @@index([groupId])
-  @@index([uid])
+  @@unique([user_id, group_id], map: "auth_user_groups_user_id_group_id_94350c0c_uniq")
+  @@index([group_id], map: "auth_user_groups_group_id_97559544")
+  @@index([user_id], map: "auth_user_groups_user_id_6a12ed8b")
 }
 
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model auth_user_user_permissions {
   id              BigInt          @id @default(autoincrement())
-  uid             String          
-  permissionId    Int
-  auth_permission auth_permission @relation(fields: [permissionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  auth_user       auth_user       @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction)
+  user_id         Int
+  permission_id   Int
+  auth_permission auth_permission @relation(fields: [permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm")
+  auth_user       auth_user       @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id")
 
-  @@unique([uid, permissionId])
-  @@index([permissionId])
-  @@index([uid])
+  @@unique([user_id, permission_id], map: "auth_user_user_permissions_user_id_permission_id_14a6b632_uniq")
+  @@index([permission_id], map: "auth_user_user_permissions_permission_id_1fbb5f2c")
+  @@index([user_id], map: "auth_user_user_permissions_user_id_a95ead1b")
 }
 
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model authtoken_token {
   key       String    @id @db.VarChar(40)
   created   DateTime  @db.Timestamptz(6)
-  uid       String    @unique @db.VarChar(50)
-  auth_user auth_user @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction)
+  user_id   Int       @unique
+  auth_user auth_user @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "authtoken_token_user_id_35299eff_fk_auth_user_id")
 
-  @@index([key])
+  @@index([key], map: "authtoken_token_key_10f0b77e_like")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model django_admin_log {
+  id                  Int                  @id @default(autoincrement())
+  action_time         DateTime             @db.Timestamptz(6)
+  object_id           String?
+  object_repr         String               @db.VarChar(200)
+  action_flag         Int                  @db.SmallInt
+  change_message      String
+  content_type_id     Int?
+  user_id             Int
+  django_content_type django_content_type? @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_admin_log_content_type_id_c4bce8eb_fk_django_co")
+  auth_user           auth_user            @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_admin_log_user_id_c564eba6_fk_auth_user_id")
+
+  @@index([content_type_id], map: "django_admin_log_content_type_id_c4bce8eb")
+  @@index([user_id], map: "django_admin_log_user_id_c564eba6")
+}
+
+model django_content_type {
+  id               Int                @id @default(autoincrement())
+  app_label        String             @db.VarChar(100)
+  model            String             @db.VarChar(100)
+  main_label       String?            @db.VarChar(100)
+  auth_permission  auth_permission[]
+  django_admin_log django_admin_log[]
+
+  @@unique([app_label, model], map: "django_content_type_app_label_model_76bd3d3b_uniq")
+}
+
+model django_migrations {
+  id      BigInt   @id @default(autoincrement())
+  app     String   @db.VarChar(255)
+  name    String   @db.VarChar(255)
+  applied DateTime @db.Timestamptz(6)
+}
+
+model django_session {
+  session_key  String   @id @db.VarChar(40)
+  session_data String
+  expire_date  DateTime @db.Timestamptz(6)
+
+  @@index([expire_date], map: "django_session_expire_date_a5c62663")
+  @@index([session_key], map: "django_session_session_key_c0390e0f_like")
+}
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model pbx_access_control_nodes {
@@ -1158,12 +1188,12 @@ model pbx_domain_settings {
   updated      DateTime?   @db.Timestamptz(6)
   synchronised DateTime?   @db.Timestamptz(6)
   updated_by   String      @db.VarChar(64)
-  domainId     String      @db.Uuid
-  pbx_domains  pbx_domains @relation("DomainSettingsRelation", fields: [domainId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pbx_domain_settings_domain_id_id_c7461c47_fk_pbx_domains_id")
+  domain_id_id String      @db.Uuid
+  pbx_domains  pbx_domains @relation(fields: [domain_id_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pbx_domain_settings_domain_id_id_c7461c47_fk_pbx_domains_id")
 
   @@index([category], map: "pbx_domain_settings_category_b8b72e31")
   @@index([category], map: "pbx_domain_settings_category_b8b72e31_like")
-  @@index([domainId])
+  @@index([domain_id_id], map: "pbx_domain_settings_domain_id_id_c7461c47")
   @@index([subcategory], map: "pbx_domain_settings_subcategory_db5affbb")
   @@index([subcategory], map: "pbx_domain_settings_subcategory_db5affbb_like")
   @@index([value_type], map: "pbx_domain_settings_value_type_41f42703")
@@ -1172,19 +1202,17 @@ model pbx_domain_settings {
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
 model pbx_domains {
-  id                     String                   @id @db.Uuid
+  id                     String                   @id
   name                   String                   @unique @db.VarChar(128)
   enabled                String                   @db.VarChar(8)
   description            String?                  @db.VarChar(128)
   created                DateTime?                @db.Timestamptz(6)
   updated                DateTime?                @db.Timestamptz(6)
   synchronised           DateTime?                @db.Timestamptz(6)
-  updatedBy              String                   @db.VarChar(64)
-  homeSwitch             String                   @db.VarChar(128)
-  menuId                 String?                  @db.Uuid
-  portalName             String                   @unique @db.VarChar(128)
-  tenantId               String                   @db.VarChar(50)
-  tenant                 auth_tenant              @relation(fields: [tenantId], references: [id])
+  updated_by             String                   @db.VarChar(64)
+  home_switch            String                   @db.VarChar(128)
+  menu_id_id             String?                  @db.Uuid
+  portal_name            String                   @unique(map: "pbx_domains_portal_name_c142f899_uniq") @db.VarChar(128)
   pbx_auto_report        pbx_auto_report[]
   pbx_bridges            pbx_bridges[]
   pbx_call_block         pbx_call_block[]
@@ -1199,8 +1227,8 @@ model pbx_domains {
   pbx_devices            pbx_devices[]
   pbx_dialplan_excludes  pbx_dialplan_excludes[]
   pbx_dialplans          pbx_dialplans[]
-  domain_settings        pbx_domain_settings[]    @relation("DomainSettingsRelation")
-  pbx_menus              pbx_menus?               @relation(fields: [menuId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pbx_domains_menu_id_id_e5f9f32c_fk_pbx_menus_id")
+  pbx_domain_settings    pbx_domain_settings[]
+  pbx_menus              pbx_menus?               @relation(fields: [menu_id_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pbx_domains_menu_id_id_e5f9f32c_fk_pbx_menus_id")
   pbx_email_templates    pbx_email_templates[]
   pbx_extensions         pbx_extensions[]
   pbx_gateways           pbx_gateways[]
@@ -1212,10 +1240,9 @@ model pbx_domains {
   pbx_users              pbx_users[]
   pbx_xml_cdr            pbx_xml_cdr[]
 
-  @@index([menuId])
-  @@index([name])
-  @@index([portalName])
-  @@index([tenantId])
+  @@index([menu_id_id], map: "pbx_domains_menu_id_id_e5f9f32c")
+  @@index([name], map: "pbx_domains_name_ce0c9e76_like")
+  @@index([portal_name], map: "pbx_domains_portal_name_c142f899_like")
 }
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
@@ -1232,7 +1259,7 @@ model pbx_email_templates {
   created      DateTime?    @db.Timestamptz(6)
   updated      DateTime?    @db.Timestamptz(6)
   synchronised DateTime?    @db.Timestamptz(6)
-  updatedBy    String       @db.VarChar(64)
+  updated_by   String       @db.VarChar(64)
   domain_id_id String?      @db.Uuid
   pbx_domains  pbx_domains? @relation(fields: [domain_id_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pbx_email_templates_domain_id_id_592ee910_fk_pbx_domains_id")
 
@@ -1523,14 +1550,14 @@ model pbx_menu_items {
 }
 
 model pbx_menus {
-  id          String        @id @db.Uuid
-  name        String        @db.VarChar(64)
-  description String        @db.VarChar(128)
-  created     DateTime?     @db.Timestamptz(6)
-  updated     DateTime?     @db.Timestamptz(6)
-  synchronised DateTime?    @db.Timestamptz(6)
-  updated_by  String        @db.VarChar(64)
-  pbx_domains pbx_domains[]
+  id             String           @id @db.Uuid
+  name           String           @db.VarChar(64)
+  description    String           @db.VarChar(128)
+  created        DateTime?        @db.Timestamptz(6)
+  updated        DateTime?        @db.Timestamptz(6)
+  synchronised   DateTime?        @db.Timestamptz(6)
+  updated_by     String           @db.VarChar(64)
+  pbx_domains    pbx_domains[]
   pbx_menu_items pbx_menu_items[]
 }
 
@@ -1803,13 +1830,16 @@ model pbx_user_settings {
   updated      DateTime? @db.Timestamptz(6)
   synchronised DateTime? @db.Timestamptz(6)
   updated_by   String    @db.VarChar(64)
-  pbx_user_id  BigInt    @map("user_id_id")
-  pbx_user     pbx_users @relation(fields: [pbx_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user_id_id   BigInt
+  pbx_users    pbx_users @relation(fields: [user_id_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pbx_user_settings_user_id_id_f9155e23_fk_pbx_users_id")
 
-  @@index([category])
-  @@index([subcategory])
-  @@index([pbx_user_id])
-  @@index([value_type])
+  @@index([category], map: "pbx_user_settings_category_abdd8fa8")
+  @@index([category], map: "pbx_user_settings_category_abdd8fa8_like")
+  @@index([subcategory], map: "pbx_user_settings_subcategory_681bdf20")
+  @@index([subcategory], map: "pbx_user_settings_subcategory_681bdf20_like")
+  @@index([user_id_id], map: "pbx_user_settings_user_id_id_f9155e23")
+  @@index([value_type], map: "pbx_user_settings_value_type_2a2d5624")
+  @@index([value_type], map: "pbx_user_settings_value_type_2a2d5624_like")
 }
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
@@ -1825,20 +1855,20 @@ model pbx_users {
   updated                   DateTime?                   @db.Timestamptz(6)
   synchronised              DateTime?                   @db.Timestamptz(6)
   updated_by                String                      @db.VarChar(64)
-  domainId                  String?                     @db.Uuid
-  auth_user_id              String                      @unique @db.VarChar(50)
+  domain_id_id              String?                     @db.Uuid
+  user_id                   Int                         @unique
   pbx_call_centre_agents    pbx_call_centre_agents[]
   pbx_conference_room_users pbx_conference_room_users[]
   pbx_contacts              pbx_contacts[]
-  pbx_devices              pbx_devices[]
-  pbx_extension_users      pbx_extension_users[]
-  pbx_ring_group_users     pbx_ring_group_users[]
-  pbx_user_settings        pbx_user_settings[]
-  pbx_domains              pbx_domains?                @relation(fields: [domainId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  auth_user                auth_user                   @relation(fields: [auth_user_id], references: [uid], onDelete: NoAction, onUpdate: NoAction)
+  pbx_devices               pbx_devices[]
+  pbx_extension_users       pbx_extension_users[]
+  pbx_ring_group_users      pbx_ring_group_users[]
+  pbx_user_settings         pbx_user_settings[]
+  pbx_domains               pbx_domains?                @relation(fields: [domain_id_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pbx_users_domain_id_id_cfe07cc2_fk_pbx_domains_id")
+  auth_user                 auth_user                   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "pbx_users_user_id_4712cf8b_fk_auth_user_id")
 
-  @@index([domainId])
-  @@index([username])
+  @@index([domain_id_id], map: "pbx_users_domain_id_id_cfe07cc2")
+  @@index([username], map: "pbx_users_username_bda12c52_like")
 }
 
 model pbx_vars {

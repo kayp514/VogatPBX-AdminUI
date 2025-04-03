@@ -233,16 +233,7 @@ export function SidebarComponent() {
           </ul>
         </nav>
         <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
-          <Switch
-            checked={isDarkMode}
-            onCheckedChange={toggleDarkMode}
-            className="data-[state=checked]:bg-primary"
-          />
-          {isDarkMode ? (
-            <Moon className="h-5 w-5" />
-          ) : (
-            <Sun className="h-5 w-5" />
-          )}
+          
         </div>
       </div>
     </TooltipProvider>

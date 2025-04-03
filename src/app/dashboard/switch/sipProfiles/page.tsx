@@ -1,188 +1,22 @@
-"use client"
+import { SipProfiles } from "@/components/sip-profile"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Card, CardContent } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Switch } from "@/components/ui/switch"
-import { SipProfileDialog } from "@/app/ui/sipprofileadd-dialog"
-import { DeleteButton } from "@/app/ui/buttons"
-import { toast } from "@/hooks/use-toast"
-import { SipProfilesSkeleton } from "@/app/ui/skeleton"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { SipProfileCopyDialog } from "@/app/ui/sipprofileCopyDialog"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 
-
-type SipProfile = {
-    id: string;
-    name: string;
-    hostname: string;
-    enabled: string;
-    description: string;
+async function getSipProfiles() {
+  const res = await fetch(`${API_BASE_URL}/api/v1/sipProfiles/`, { 
+    cache: 'no-store' 
+  })
+  if (!res.ok) {
+    throw new Error('Failed to fetch sip profiles')
   }
-
-export default function SipProfilesPage() {
-  const router = useRouter()
-  const [sipProfiles, setSipProfiles] = useState<SipProfile[]>([])
-  const [selectedSipProfiles, setSelectedSipProfiles] = useState<string[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [showCopyDialog, setShowCopyDialog] = useState(false)
-  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null)
-
-  useEffect(() => {
-  async function fetchSipProfiles() {
-    try {
-      const response = await fetch('/api/v1/sipProfiles/')
-      if (!response.ok) {
-        throw new Error('Failed to fetch SIP profiles')
-      }
-      const data = await response.json()
-      setSipProfiles(data)
-    } catch (error) {
-      console.error('Error fetching SIP profiles:', error)
-      toast({
-        title: "Error",
-        description: "Failed to fetch SIP profiles. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  fetchSipProfiles()
-}, [])
+  return res.json()
+}
 
 
 
-  const toggleSipProfile = (id: string) => {
-    setSelectedSipProfiles(prev =>
-      prev.includes(id) ? prev.filter(spId => spId !== id) : [...prev, id]
-    )
-  }
+export default async function SipProfilesPage() {
+  const sipProfiles = await getSipProfiles()
 
-  const toggleAll = () => {
-    setSelectedSipProfiles(prev =>
-      prev.length === sipProfiles.length ? [] : sipProfiles.map(sp => sp.id)
-    )
-  }
-
-  const toggleEnabled = (id: string) => {
-    console.log(`Toggle enabled for SIP profile with id: ${id}`)
-    // Implement toggle enabled logic here
-  }
-
-  const handlePreferences = (id: string) => {
-    console.log(`Open preferences for sip profile with id: ${id}`)
-    router.push(`/dashboard/switch/sipProfiles/${id}/settings`)
-
-  }
-
-  const handleDeleteSingle = (id: string) => {
-    console.log(`Delete domain with id: ${id}`)
-    // Implement delete single domain logic here
-  }
-
-  const handleCopy = (id: string) => {
-    setSelectedProfileId(id)
-    setShowCopyDialog(true)
-  }
-
-  const handleCloseCopyDialog = () => {
-    setShowCopyDialog(false)
-    setSelectedProfileId(null)
-  }
-
-  return (
-    <div className="container mx-auto py-10">
-      <div className="mb-6 flex justify-between items-center">
-        <h1 className="text-2xl font-semibold">SIP Profiles</h1>
-        <div className="space-x-2">
-        <SipProfileDialog />
-        </div>
-      </div>
-      <Card>
-        <CardContent className="p-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[50px]">
-                  <Checkbox
-                    checked={selectedSipProfiles.length === sipProfiles.length}
-                    onCheckedChange={toggleAll}
-                  />
-                </TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Hostname</TableHead>
-                <TableHead>Enabled</TableHead>
-                <TableHead>Description</TableHead>
-
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-                {loading ? (
-                  <>
-                    <SipProfilesSkeleton />
-                    <SipProfilesSkeleton />
-                    <SipProfilesSkeleton />
-                  </>
-              ) : error ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center text-red-500">{error}</TableCell>
-                </TableRow> 
-              ) : (
-                sipProfiles.map((sipProfile) => (
-                  <TableRow key={sipProfile.id}>
-                    <TableCell>
-                      <Checkbox
-                        checked={selectedSipProfiles.includes(sipProfile.id)}
-                        onCheckedChange={() => toggleSipProfile(sipProfile.id)}
-                      />
-                    </TableCell>
-                    <TableCell>{sipProfile.name}</TableCell>
-                    <TableCell>{sipProfile.hostname}</TableCell>
-                    <TableCell>
-                      <Switch
-                        checked={sipProfile.enabled === 'true'}
-                        onCheckedChange={() => toggleEnabled(sipProfile.id)}
-                      />
-                    </TableCell>
-                    <TableCell>{sipProfile.description}</TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger>
-                          <DotsHorizontalIcon className="h-5 w-5" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuItem onSelect={() => handlePreferences(sipProfile.id)}>
-                            Preferences
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={() => handleCopy(sipProfile.id)}>
-                            Copy
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={() => handleDeleteSingle(sipProfile.id)}>
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))
-            )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-      {showCopyDialog && selectedProfileId && (
-        <SipProfileCopyDialog
-          isOpen={showCopyDialog}
-          onClose={handleCloseCopyDialog}
-          profileId={selectedProfileId}
-        />
-      )}
-    </div>
-  )
+  return <SipProfiles initialProfiles={sipProfiles} />
+  
 }
