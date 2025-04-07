@@ -51,8 +51,7 @@ model auth_tenant {
   logo        String?       @db.VarChar(255)
   plan        String        @default("basic") @db.VarChar(20)
   maxUsers    Int           @default(5)
-  isActive    Boolean       @default(true)
-  features    Json?
+  disabled    Boolean       
   users       auth_user[]
   pbxDomains  pbx_domains[]
 
@@ -1174,15 +1173,15 @@ model pbx_domain_settings {
 model pbx_domains {
   id                     String                   @id @db.Uuid
   name                   String                   @unique @db.VarChar(128)
-  enabled                String                   @db.VarChar(8)
+  disabled               Boolean                  @default(false)
   description            String?                  @db.VarChar(128)
   created                DateTime?                @db.Timestamptz(6)
   updated                DateTime?                @db.Timestamptz(6)
   synchronised           DateTime?                @db.Timestamptz(6)
   updatedBy              String                   @db.VarChar(64)
-  homeSwitch             String                   @db.VarChar(128)
+  homeSwitch             String?                  @db.VarChar(128)
   menuId                 String?                  @db.Uuid
-  portalName             String                   @unique @db.VarChar(128)
+  portalName             String?                  @unique @db.VarChar(128)
   tenantId               String                   @db.VarChar(50)
   tenant                 auth_tenant              @relation(fields: [tenantId], references: [id])
   pbx_auto_report        pbx_auto_report[]
@@ -1308,7 +1307,7 @@ model pbx_extensions {
   forward_caller_id                       String?                      @db.VarChar(16)
   follow_me_enabled                       String                       @db.VarChar(8)
   follow_me_destinations                  String?
-  enabled                                 String                       @db.VarChar(8)
+  disabled                                Boolean                      
   description                             String?                      @db.VarChar(64)
   absolute_codec_string                   String?                      @db.VarChar(64)
   force_ping                              String                       @db.VarChar(8)
@@ -1763,7 +1762,7 @@ model pbx_sip_profile_settings {
   id               String           @id @db.Uuid
   name             String           @db.VarChar(64)
   value            String?          @db.VarChar(254)
-  enabled          String           @db.VarChar(8)
+  disabled         Boolean          
   description      String?          @db.VarChar(254)
   created          DateTime?        @db.Timestamptz(6)
   updated          DateTime?        @db.Timestamptz(6)
@@ -1779,7 +1778,7 @@ model pbx_sip_profiles {
   id                       String                     @id @db.Uuid
   name                     String                     @db.VarChar(64)
   hostname                 String?                    @db.VarChar(128)
-  enabled                  String                     @db.VarChar(8)
+  disabled                 Boolean                   
   description              String?                    @db.VarChar(254)
   created                  DateTime?                  @db.Timestamptz(6)
   updated                  DateTime?                  @db.Timestamptz(6)
@@ -1797,7 +1796,7 @@ model pbx_user_settings {
   value_type   String    @db.VarChar(32)
   value        String?   @db.VarChar(254)
   sequence     Decimal   @db.Decimal(11, 0)
-  enabled      String    @db.VarChar(8)
+  disabled     Boolean   
   description  String?   @db.VarChar(128)
   created      DateTime? @db.Timestamptz(6)
   updated      DateTime? @db.Timestamptz(6)
@@ -1820,11 +1819,11 @@ model pbx_users {
   email                     String?                     @db.VarChar(254)
   status                    String                      @db.VarChar(32)
   api_key                   String?                     @db.VarChar(254)
-  enabled                   String                      @db.VarChar(8)
+  disabled                  Boolean                     
   created                   DateTime?                   @db.Timestamptz(6)
   updated                   DateTime?                   @db.Timestamptz(6)
   synchronised              DateTime?                   @db.Timestamptz(6)
-  updated_by                String                      @db.VarChar(64)
+  updatedBy                 String                      @db.VarChar(64)
   domainId                  String?                     @db.Uuid
   auth_user_id              String                      @unique @db.VarChar(50)
   pbx_call_centre_agents    pbx_call_centre_agents[]

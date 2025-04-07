@@ -1,127 +1,18 @@
 'use client'
-import * as React from "react"
-import { useState } from "react"
-import { usePathname } from "next/navigation"
-import { SidebarComponent } from "../../components/sidebar"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { ChevronRight } from "lucide-react"
-import { FlushCacheButton, ReloadAclButton, ReloadXmlButton, RefreshButton } from "@/components/buttons"
-
-const segmentsWithoutPages = ['settings', 'accounts', 'switch', 'monitoring', 'users-and-auth', 'tenants']
-
-const hasOwnPage = (segment: string, index: number, segments: string[]) => {
-  const lowerSegment = segment.toLowerCase()
-
-  if (lowerSegment === 'dashboard') {
-    return true
-  }
-  
-  if (segmentsWithoutPages.includes(lowerSegment)) {
-    return false
-  }
-
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-  if (uuidRegex.test(segment)) {
-    return false
-  }
-
-  if (index < segments.length - 1 && segmentsWithoutPages.includes(segments[index + 1].toLowerCase())) {
-    return false
-  }
-  return true
-}
+import { DashboardLayout } from "@/components/dashboard-layout"
+import { AuthProvider } from "@/lib/mock-auth"
+import { ThemeProvider } from "@/components/theme-provider"
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname()
 
-  const [isLoading, setIsLoading] = useState<Record<string, boolean>>({
-    flushCache: false,
-    reloadAcl: false,
-    reloadXml: false,
-    refresh: false,
-  })
-  
-
-  const handleAction = (action: string) => {
-    setIsLoading({ ...isLoading, [action]: true })
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading({ ...isLoading, [action]: false })
-      console.log(`Action triggered: ${action}`)
-    }, 1000)
-  }
-
-  const breadcrumbs = React.useMemo(() => {
-    const pathSegments = pathname.split("/").filter(Boolean)
-    if (pathSegments.length === 0) {
-      return [{ name: "Dashboard", href: "/dashboard", hasOwnPage: true }]
-    }
-    return pathSegments.map((segment, index) => {
-      const href = `/${pathSegments.slice(0, index + 1).join("/")}`
-      return {
-        name: segment.charAt(0).toUpperCase() + segment.slice(1),
-        href,
-        hasOwnPage: hasOwnPage(segment, index, pathSegments)
-      }
-    })
-  }, [pathname])
 
   return (
-    <div className="flex h-screen">
-      <SidebarComponent />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-16 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6">
-          <Breadcrumb>
-            <BreadcrumbList>
-              {breadcrumbs.map((crumb, index) => (
-                <React.Fragment key={crumb.href}>
-                  <BreadcrumbItem>
-                    {index === breadcrumbs.length - 1 ? (
-                      <BreadcrumbPage>{crumb.name}</BreadcrumbPage>
-                    ) : (
-                      crumb.hasOwnPage ? (
-                        <BreadcrumbLink href={crumb.href}>{crumb.name}</BreadcrumbLink>
-                      ) : (
-                        <span className="text-muted-foreground">{crumb.name}</span>
-                      )
-                    )}
-                  </BreadcrumbItem>
-                  {index < breadcrumbs.length - 1 && (
-                    <BreadcrumbSeparator>
-                      <ChevronRight className="h-4 w-4" />
-                    </BreadcrumbSeparator>
-                  )}
-                </React.Fragment>
-              ))}
-              {breadcrumbs.length === 1 && (
-                <BreadcrumbSeparator>
-                  <ChevronRight className="h-4 w-4" />
-                </BreadcrumbSeparator>
-              )}
-            </BreadcrumbList>
-          </Breadcrumb>
-          
-          <div className="flex items-center gap-1 md:gap-2 ml-2 flex-shrink-0">
-            <FlushCacheButton isLoading={isLoading.flushCache} onClick={() => handleAction("flushCache")} />
-            <ReloadAclButton isLoading={isLoading.reloadAcl} onClick={() => handleAction("reloadAcl")} />
-            <ReloadXmlButton isLoading={isLoading.reloadXml} onClick={() => handleAction("reloadXml")} />
-            <RefreshButton isLoading={isLoading.refresh} onClick={() => handleAction("refresh")} />
-          </div>
-        </header>
-        <main className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900">
-          <div className="container mx-auto py-4 px-4 sm:px-6 lg:px-8">
-            {children}
-          </div>
-        </main>
-      </div>
-    </div>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+    <AuthProvider>
+      <DashboardLayout>
+        {children}
+      </DashboardLayout>
+    </AuthProvider>
+    </ThemeProvider>
   )
 }

@@ -32,7 +32,7 @@ export function Gateways({ initialGateways }: GatewayProps) {
   }
 
   const handleAdd = () => {
-    router.push('/dashboard/accounts/gateways/add')
+    router.push('/dashboard/switch/gateways/add')
   }
 
   const handleDelete = () => {
@@ -42,7 +42,7 @@ export function Gateways({ initialGateways }: GatewayProps) {
 
   const handlePreferences = (id: string) => {
     console.log(`Open preferences for gateway with id: ${id}`)
-    router.push(`/dashboard/accounts/gateways/${id}/settings`)
+    router.push(`/dashboard/switch/gateways/${id}/settings`)
   }
 
   const handleToggleEnable = (id: string) => {

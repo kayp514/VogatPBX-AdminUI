@@ -76,7 +76,7 @@ interface ExtensionsTableProps {
                     <TableCell className="hidden md:table-cell">{extension.call_group}</TableCell>
                     <TableCell>{extension.user_context}</TableCell>
                     <TableCell>
-                      {extension.enabled ? (
+                      {extension.disabled ? (
                         <CheckCircle2 className="text-green-500" size={20} />
                       ) : (
                         <XCircle className="text-red-500" size={20} />
@@ -102,7 +102,7 @@ interface ExtensionsTableProps {
                            onSelect={() => onToggleEnable(extension.id)}
                            disabled={isLoading[extension.id]}
                            >
-                            {extension.enabled ? 'Disable' : 'Enable'}
+                            {extension.disabled ? 'Disable' : 'Enable'}
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem 

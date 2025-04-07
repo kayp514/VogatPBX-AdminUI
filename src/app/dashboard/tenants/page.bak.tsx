@@ -5,89 +5,92 @@ import { useRouter } from "next/navigation"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
-import { BridgeSkeleton } from "@/components/skeleton"
-import { AddBridgeButton, DeleteBridgeButton } from "@/components/buttons"
+import { Switch } from "@/components/ui/switch"
+import { DomainSkeleton } from "@/components/skeleton"
+import { AddButton, DeleteButton } from "@/components/buttons"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { Check, X } from "lucide-react"
+import { CheckCircle2, XCircle, Check, X } from "lucide-react"
 
-type Bridge = {
+type Domain = {
   id: number;
   name: string;
-  destination: string;
+  portal_name: string;
+  home_switch: string;
+  description: string;
   enabled: boolean;
 }
 
-export default function BridgePage() {
+export default function DomainPage() {
+  const [domains, setDomains] = useState<Domain[]>([])
   const router = useRouter()
-  const [bridges, setBridges] = useState<Bridge[]>([])
-  const [selectedBridges, setSelectedBridges] = useState<number[]>([])
+  const [selectedDomains, setSelectedDomains] = useState<number[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    async function fetchBridges() {
+    async function fetchDomains() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/v1/bridges/')
+        const response = await fetch('/api/v1/domains/')
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         const data = await response.json()
-        setBridges(data)
+        setDomains(data)
       } catch (e) {
-        setError('Failed to fetch bridges')
-        console.error('Error fetching bridges:', e)
+        setError('Failed to fetch domains')
+        console.error('Error fetching domains:', e)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchBridges()
+    fetchDomains()
   }, [])
 
-  const toggleBridge = (id: number) => {
-    setSelectedBridges(prev =>
-      prev.includes(id) ? prev.filter(bridgeId => bridgeId !== id) : [...prev, id]
+  const toggleDomain = (id: number) => {
+    setSelectedDomains(prev =>
+      prev.includes(id) ? prev.filter(domainId => domainId !== id) : [...prev, id]
     )
   }
 
   const toggleAll = () => {
-    setSelectedBridges(prev =>
-      prev.length === bridges.length ? [] : bridges.map(bridge => bridge.id)
+    setSelectedDomains(prev =>
+      prev.length === domains.length ? [] : domains.map(domain => domain.id)
     )
   }
 
   const handleAdd = () => {
-    router.push('/dashboard/accounts/bridges/add')
+    router.push('/dashboard/tenants/domains/add')
   }
 
   const handleDelete = () => {
-    console.log(`Delete selected bridges: ${selectedBridges.join(", ")}`)
+    console.log(`Delete selected domains: ${selectedDomains.join(", ")}`)
     // Implement delete logic here
   }
 
   const handlePreferences = (id: number) => {
-    console.log(`Open preferences for bridge with id: ${id}`)
+    console.log(`Open preferences for domain with id: ${id}`)
     // Implement preferences logic here
   }
 
   const handleToggleEnable = (id: number) => {
-    console.log(`Toggle enable for bridge with id: ${id}`)
+    console.log(`Toggle enable for domain with id: ${id}`)
     // Implement toggle enable logic here
   }
 
   const handleDeleteSingle = (id: number) => {
-    console.log(`Delete bridge with id: ${id}`)
-    // Implement delete single bridge logic here
+    console.log(`Delete domain with id: ${id}`)
+    // Implement delete single domain logic here
   }
 
   return (
     <div className="container mx-auto py-10">
       <div className="mb-6 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Bridges</h1>
+        <h1 className="text-2xl font-semibold">Domains</h1>
         <div className="space-x-2">
-          <DeleteBridgeButton onClick={handleDelete} />
-          <AddBridgeButton onClick={handleAdd} />
+          <DeleteButton onClick={handleDelete} />
+          <AddButton onClick={handleAdd} />
         </div>
       </div>
       <Card>
@@ -97,43 +100,47 @@ export default function BridgePage() {
               <TableRow>
                 <TableHead className="w-[50px]">
                   <Checkbox
-                    checked={selectedBridges.length === bridges.length}
+                    checked={selectedDomains.length === domains.length}
                     onCheckedChange={toggleAll}
                   />
                 </TableHead>
                 <TableHead>Name</TableHead>
-                <TableHead>Destination</TableHead>
+                <TableHead>Portal Name</TableHead>
+                <TableHead>Switch</TableHead>
+                <TableHead>Description</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
+                
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
                 <>
-                  <BridgeSkeleton />
-                  <BridgeSkeleton />
-                  <BridgeSkeleton />
+                  <DomainSkeleton />
+                  <DomainSkeleton />
+                  <DomainSkeleton />
                 </>
               ) : error ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-red-500">{error}</TableCell>
-                </TableRow>
+                  <TableCell colSpan={7} className="text-center text-red-500">{error}</TableCell>
+                </TableRow> 
               ) : (
-                bridges.map((bridge) => (
-                  <TableRow key={bridge.id}>
+                domains.map((domain) => (
+                  <TableRow key={domain.id}>
                     <TableCell>
                       <Checkbox
-                        checked={selectedBridges.includes(bridge.id)}
-                        onCheckedChange={() => toggleBridge(bridge.id)}
+                        checked={selectedDomains.includes(domain.id)}
+                        onCheckedChange={() => toggleDomain(domain.id)}
                       />
                     </TableCell>
-                    <TableCell>{bridge.name}</TableCell>
-                    <TableCell>{bridge.destination}</TableCell>
+                    <TableCell>{domain.name}</TableCell>
+                    <TableCell>{domain.portal_name}</TableCell>
+                    <TableCell>{domain.home_switch}</TableCell>
+                    <TableCell>{domain.description}</TableCell>
                     <TableCell>
-                      {bridge.enabled ? (
-                        <Check className="text-green-500" />
+                      {domain.enabled ? (
+                        <CheckCircle2 className="text-green-500" size={20} />
                       ) : (
-                        <X className="text-red-500" />
+                        <XCircle className="text-red-500" size={20} />
                       )}
                     </TableCell>
                     <TableCell>
@@ -142,13 +149,13 @@ export default function BridgePage() {
                           <DotsHorizontalIcon className="h-5 w-5" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
-                          <DropdownMenuItem onSelect={() => handlePreferences(bridge.id)}>
+                          <DropdownMenuItem onSelect={() => handlePreferences(domain.id)}>
                             Preferences
                           </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={() => handleToggleEnable(bridge.id)}>
-                            {bridge.enabled ? 'Disable' : 'Enable'}
+                          <DropdownMenuItem onSelect={() => handleToggleEnable(domain.id)}>
+                            {domain.enabled ? 'Disable' : 'Enable'}
                           </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={() => handleDeleteSingle(bridge.id)}>
+                          <DropdownMenuItem onSelect={() => handleDeleteSingle(domain.id)}>
                             Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>

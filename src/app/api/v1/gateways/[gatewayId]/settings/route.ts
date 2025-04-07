@@ -1,37 +1,34 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client'
-import { prisma as prismaImport} from '@/lib/prisma';
-
-const prisma = prismaImport as PrismaClient
+import { getGateway } from '@/lib/db/queries';
 
 export async function GET(
   request: Request,
-  context:{ params: Promise<{ gatewayId: string }> }
+  { params }: { params: { gatewayId: string } }
 ) {
-  const { gatewayId } = await context.params;
-
-  if (!gatewayId) {
-    return NextResponse.json({ error: 'Gateway ID is required' }, { status: 400 });
-  }
-
   try {
-    // Fetch the SIP profile
-    const gateway = await prisma.pbx_gateways.findUnique({
-      where: { id: gatewayId }
-    });
-
-    if (!gateway) {
-      return NextResponse.json({ error: 'Gateway not found' }, { status: 404 });
+    if (!params.gatewayId) {
+      return NextResponse.json(
+        { error: 'Gateway ID is required' }, 
+        { status: 400 }
+      );
     }
 
-    // Combine profile and domains data
-    const response = {
-      ...gateway,
-    };
+    const gateway = await getGateway(params.gatewayId);
 
-    return NextResponse.json(response);
+    if (!gateway) {
+      return NextResponse.json(
+        { error: 'Gateway not found' }, 
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(gateway);
+
   } catch (error) {
-    console.error('Error fetching Gateway:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error('Error fetching gateway:', error);
+    return NextResponse.json(
+      { error: 'Internal Server Error' }, 
+      { status: 500 }
+    );
   }
 }

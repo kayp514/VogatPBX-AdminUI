@@ -1,5 +1,5 @@
 import { createClient, type RedisClientType } from 'redis';
-import type { User } from './types';
+import type { DatabaseUserInput } from './types';
 
 // Cache TTL constants (in seconds)
 const CACHE_TTL = {
@@ -33,7 +33,7 @@ export async function getRedisClient(): Promise<RedisClientType> {
 }
 
 // User Cache Operations
-export async function cacheUserData(user: User) {
+export async function cacheUserData(user: DatabaseUserInput) {
   try {
     const client = await getRedisClient();
     const key = CacheKeys.USER_DATA(user.tenantId, user.uid);
@@ -41,12 +41,13 @@ export async function cacheUserData(user: User) {
     await client.hSet(key, {
         uid: user.uid,
         tenantId: user.tenantId,
-        name: user.name,
+        displayName: user.displayName || '',
         email: user.email,
         avatar: user.avatar || '',
-        lastActive: Date.now().toString() || Date.now().toString(),
-        status: user.status || 'offline',
+        lastSignedAt: Date.now().toString() || Date.now().toString(),
         isAdmin: user.isAdmin.toString(),
+        isSuperuser: user.isSuperuser.toString(),
+        isStaff: user.isStaff.toString(),
         disabled: user.disabled.toString() 
     });
     await client.expire(key, CACHE_TTL.USER);
