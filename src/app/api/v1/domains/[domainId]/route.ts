@@ -49,7 +49,7 @@ export async function GET(
   }
 }
 
-export async function PATCH(
+{/* export async function PATCH(
   request: Request,
   { params }: { params: { domainId: string } }
 ) {
@@ -67,7 +67,7 @@ export async function PATCH(
       { status: 500 }
     );
   }
-}
+} */}
 
 {/* export async function DELETE(
   request: Request,
