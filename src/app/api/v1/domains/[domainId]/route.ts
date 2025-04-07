@@ -69,7 +69,7 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
+{/* export async function DELETE(
   request: Request,
   { params }: { params: { domainId: string } }
 ) {
@@ -90,4 +90,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-}
+} */}
