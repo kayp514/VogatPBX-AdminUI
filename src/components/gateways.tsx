@@ -66,7 +66,7 @@ export function Gateways({ initialGateways }: GatewayProps) {
     (gateway) =>
       gateway.gateway.toLowerCase().includes(searchQuery.toLowerCase()) ||
       gateway.proxy.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      gateway.description.toLowerCase().includes(searchQuery.toLowerCase()),
+      gateway.description?.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
   return (

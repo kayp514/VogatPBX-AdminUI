@@ -52,9 +52,6 @@ interface GatewaysTableProps {
                 <TableHead>Name</TableHead>
                 <TableHead>Proxy</TableHead>
                 <TableHead className="hidden md:table-cell">Context</TableHead>
-                <TableHead className="hidden md:table-cell">Status</TableHead>
-                <TableHead>Actions</TableHead>
-                <TableHead>State</TableHead>
                 <TableHead>Enabled</TableHead>
                 <TableHead className="hidden lg:table-cell">Description</TableHead>
                 <TableHead className="w-[70px]"></TableHead>
@@ -76,9 +73,7 @@ interface GatewaysTableProps {
                         {gateway.proxy}
                       </code>
                     </TableCell>
-                    <TableCell>{gateway.status}</TableCell>
-                    <TableCell>{gateway.action}</TableCell>
-                    <TableCell>{gateway.state}</TableCell>
+                    <TableCell>{gateway.context}</TableCell>
                     <TableCell>
                       {gateway.enabled ? (
                         <CheckCircle2 className="text-green-500" size={20} />
