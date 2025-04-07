@@ -8,17 +8,18 @@ import {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { extensionId: string } }
+  {params}: { params: Promise<{ extensionId: string }> }
 ) {
   try {
-    if (!params.extensionId) {
+    const extensionId  = (await params).extensionId
+    if (!extensionId) {
       return NextResponse.json(
         { error: 'Extension ID is required' }, 
         { status: 400 }
       );
     }
 
-    const extension = await getExtension(params.extensionId);
+    const extension = await getExtension(extensionId);
 
     if (!extension) {
       return NextResponse.json(
