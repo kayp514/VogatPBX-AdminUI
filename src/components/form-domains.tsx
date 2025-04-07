@@ -14,7 +14,7 @@ import type { Domain, TenantOption } from "@/lib/db/types"
 import { RefreshCw } from "lucide-react"
 
 interface DomainFormProps {
-  domain: Domain | null
+  domain: Partial<Domain> | null;
   tenantOptions: TenantOption[]
   onSubmit: (domainData: any) => void
   onCancel: () => void
@@ -23,7 +23,7 @@ interface DomainFormProps {
 export function DomainForm({ domain, tenantOptions, onSubmit, onCancel }: DomainFormProps) {
   const [formData, setFormData] = useState({
     name: domain?.name || "",
-    tenant: domain?.tenant || (tenantOptions.length > 0 ? tenantOptions[0].id : ""),
+    tenant: domain?.tenantId || (tenantOptions.length > 0 ? tenantOptions[0].id : ""),
     portalName: domain?.portalName || "",
     homeSwitch: domain?.homeSwitch || "",
     description: domain?.description || "",
