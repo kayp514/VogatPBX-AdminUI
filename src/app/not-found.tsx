@@ -1,49 +1,44 @@
-import Link from 'next/link'
-import { headers } from 'next/headers'
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import Image from 'next/image'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Home, ArrowLeft, SwitchCamera } from "lucide-react"
 
-const PROD_ROOT_DOMAIN = 'vgtpbx.dev';
-const DEV_ROOT_DOMAIN = 'localhost:3000';
-const ROOT_DOMAIN = process.env.NODE_ENV === 'development' ? DEV_ROOT_DOMAIN : PROD_ROOT_DOMAIN;
- 
-export default async function NotFound() {
-  const headersList = await headers()
-  const domain = headersList.get('host')?.split(':')[0]
-   const protocol = process.env.NODE_ENV === 'development' ? 'http://' : 'https://'
-   const rootUrl = `${protocol}${ROOT_DOMAIN}`
-  //const data = await getDomainData(domain)
-
+export default function NotFound() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
+      <Card className="max-w-md w-full shadow-lg border-muted">
+        <CardHeader className="text-center pb-2">
           <div className="flex justify-center mb-4">
-            <Image
-              src="/logoPBX.png?height=64&width=64"
-              alt="VogatPBX Logo"
-              width={64}
-              height={64}
-              className="rounded-lg"
-            />
+            <div className="h-16 w-16 rounded-lg bg-primary flex items-center justify-center">
+              <SwitchCamera className="h-8 w-8 text-primary-foreground" />
+            </div>
           </div>
-          <CardTitle className="text-2xl font-bold">404 - Not Found</CardTitle>
-          <CardDescription>
-            {domain ? `Domain: ${domain}` : 'Unknown Domain'}
+          <CardTitle className="text-2xl font-bold">Page Not Found</CardTitle>
+          <CardDescription className="text-base">
+            The page you're looking for doesn't exist or has been moved.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-center text-red-600">The requested resource could not be found.</p>
-          <Button asChild className="w-full">
-            <Link href={rootUrl}>Return to Homepage</Link>
-          </Button>
+        <CardContent className="text-center pb-2">
+          <p className="text-muted-foreground">
+            Check the URL or navigate back to a known page using the buttons below.
+          </p>
         </CardContent>
+        <CardFooter className="flex flex-col sm:flex-row gap-2 justify-center pt-2">
+          <Button variant="outline" asChild>
+            <Link href="/dashboard" className="flex items-center gap-2">
+              <Home className="h-4 w-4" />
+              Dashboard Home
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link href="javascript:history.back()" className="flex items-center gap-2">
+              <ArrowLeft className="h-4 w-4" />
+              Go Back
+            </Link>
+          </Button>
+        </CardFooter>
       </Card>
-      
-      <footer className="mt-8 text-center text-sm text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} VogatPBX. All rights reserved.</p>
-      </footer>
     </div>
   )
 }
+

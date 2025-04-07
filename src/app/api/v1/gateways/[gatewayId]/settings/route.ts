@@ -3,17 +3,18 @@ import { getGateway } from '@/lib/db/queries';
 
 export async function GET(
   request: Request,
-  { params }: { params: { gatewayId: string } }
+  {params}: { params: Promise<{ gatewayId: string }> }
 ) {
   try {
-    if (!params.gatewayId) {
+    const gatewayId  = (await params).gatewayId
+    if (!gatewayId) {
       return NextResponse.json(
         { error: 'Gateway ID is required' }, 
         { status: 400 }
       );
     }
 
-    const gateway = await getGateway(params.gatewayId);
+    const gateway = await getGateway(gatewayId);
 
     if (!gateway) {
       return NextResponse.json(
