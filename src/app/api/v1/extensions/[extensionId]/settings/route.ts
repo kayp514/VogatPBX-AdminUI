@@ -1,37 +1,47 @@
 import { NextRequest,NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client'
-import { prisma as prismaImport} from '@/lib/prisma';
+import { 
+  getExtension, 
+  updateExtension, 
+  deleteExtension 
+} from '@/lib/db/queries'
 
-const prisma = prismaImport as PrismaClient
 
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ extensionId: string }> }
+  { params }: { params: { extensionId: string } }
 ) {
-  const { extensionId } = await context.params;
-
-  if (!extensionId) {
-    return NextResponse.json({ error: 'Extension ID is required' }, { status: 400 });
-  }
-
   try {
-    // Fetch the SIP profile
-    const extension = await prisma.pbx_extensions.findUnique({
-      where: { id: extensionId }
-    });
-
-    if (!extension) {
-      return NextResponse.json({ error: 'Extension not found' }, { status: 404 });
+    if (!params.extensionId) {
+      return NextResponse.json(
+        { error: 'Extension ID is required' }, 
+        { status: 400 }
+      );
     }
 
-    // Combine profile and domains data
-    //const response = {
-    //  ...extension,
-    //};
+    const extension = await getExtension(params.extensionId);
 
-    return NextResponse.json(extension);
+    if (!extension) {
+      return NextResponse.json(
+        { error: 'Extension not found' }, 
+        { status: 404 }
+      );
+    }
+
+    const response = {
+      ...extension,
+      users: extension.pbx_extension_users.map(user => ({
+        id: user.id,
+        user_id: user.user_uuid,
+        extension_id: user.extension_uuid,
+        created: user.created,
+        updated: user.updated
+      }))
+    };
+
+    return NextResponse.json(response);
   } catch (error) {
-    console.error('Error fetching Extension:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal Server Error' }, 
+      { status: 500 });
   }
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { SignUp } from '@tern-secure/nextjs'
-import { createDatabaseUser } from "@/app/actions"
+import { createAuthPbxUser } from "@/app/actions"
 import type { FirebaseAuthUser } from '@/lib/db/types'
 import { ternSecureAuth } from '@tern-secure/nextjs'
 
@@ -37,7 +37,7 @@ export default function Page() {
 
       //console.log('at sign-up page', firebaseUser)
 
-      const result = await createDatabaseUser(firebaseUser)
+      const result = await createAuthPbxUser(firebaseUser)
       //console.log("Database Creation Result:", result)
 
       if (!result.success) {

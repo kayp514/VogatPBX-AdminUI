@@ -34,7 +34,7 @@ export function Extensions({ initialExtensions }: ExtensionsProps) {
 
   const handlePreferences = (id: string) => {
     console.log(`Open preferences for extension with id: ${id}`)
-    router.push(`/dashboard/accounts/extensions/${id}/settings`)
+    router.push(`/dashboard/pbx/extensions/${id}/settings`)
 
   }
 
@@ -84,8 +84,8 @@ export function Extensions({ initialExtensions }: ExtensionsProps) {
   const filteredExtensions = initialExtensions.filter(
     (ext) =>
       ext.extension.includes(searchQuery) ||
-      ext.effective_caller_id_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ext.user_context.toLowerCase().includes(searchQuery.toLowerCase()),
+      ext.effective_caller_id_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ext.user_context?.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
   return (

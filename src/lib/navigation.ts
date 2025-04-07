@@ -27,8 +27,11 @@ import {
   Headset,
   LayoutDashboard,
   Smartphone,
+  LineChart,
+  PieChart,
+  Globe
 } from "lucide-react"
-import type { UserRole } from "@/lib/auth-context"
+import type { UserRole } from "@/lib/db/types"
 
 export type NavItem = {
   name: string
@@ -36,22 +39,42 @@ export type NavItem = {
   icon: React.ElementType
   hasSubmenu?: boolean
   submenu?: NavItem[]
-  section?: "pbx" | "freeswitch" | "system"
+  section?: "overview" | "pbx" | "switch" | "system" | "tenants"
   roles?: UserRole[]
   permission?: string
 }
 
 export const navigation: NavItem[] = [
-  // Dashboard - Available to all roles
+  // Overview Section
   {
-    name: "Dashboard",
-    href: "/dashboard",
-    icon: Home,
-    section: "pbx",
+    name: "Overview",
+    icon: LayoutDashboard,
+    hasSubmenu: true,
+    section: "overview",
     roles: ["admin", "superuser", "member"],
+    submenu: [
+      {
+        name: "Dashboard",
+        href: "/dashboard",
+        icon: Home,
+        roles: ["admin", "superuser", "member"],
+      },
+      {
+        name: "Analytics",
+        href: "/dashboard/analytics",
+        icon: LineChart,
+        roles: ["admin", "superuser"],
+      },
+      {
+        name: "Reports",
+        href: "/dashboard/reports",
+        icon: PieChart,
+        roles: ["admin", "superuser", "member"],
+      },
+    ],
   },
 
-  // PBX Functionalities - Grouped together
+  // PBX Functionalities
   {
     name: "PBX",
     icon: Phone,
@@ -59,7 +82,6 @@ export const navigation: NavItem[] = [
     section: "pbx",
     roles: ["admin", "superuser", "member"],
     submenu: [
-      // Dashboard item removed from here since it's already a standalone item
       {
         name: "Extensions",
         href: "/dashboard/pbx/extensions",
@@ -151,67 +173,67 @@ export const navigation: NavItem[] = [
     ],
   },
 
-  // FreeSWITCH Functionalities - Grouped together
+  // Switch Functionalities - Grouped together
   {
-    name: "FreeSWITCH",
+    name: "Switch",
     icon: SwitchCamera,
     hasSubmenu: true,
-    section: "freeswitch",
+    section: "switch",
     roles: ["admin", "superuser"],
-    permission: "freeswitch.view",
+    permission: "switch.view",
     submenu: [
       {
         name: "SIP Profiles",
-        href: "/dashboard/freeswitch/sip-profiles",
+        href: "/dashboard/switch/sipProfiles",
         icon: LayoutGrid,
         roles: ["admin", "superuser"],
         permission: "sip_profiles.view",
       },
       {
         name: "Modules",
-        href: "/dashboard/freeswitch/modules",
+        href: "/dashboard/switch/modules",
         icon: Layers,
         roles: ["admin"],
         permission: "modules.view",
       },
       {
         name: "Access Controls",
-        href: "/dashboard/freeswitch/access-controls",
+        href: "/dashboard/switch/accesscontrols",
         icon: Shield,
         roles: ["admin", "superuser"],
         permission: "access_controls.view",
       },
       {
         name: "Variables",
-        href: "/dashboard/freeswitch/variables",
+        href: "/dashboard/switch/variables",
         icon: Variable,
         roles: ["admin"],
         permission: "variables.view",
       },
       {
         name: "Gateways",
-        href: "/dashboard/freeswitch/gateways",
+        href: "/dashboard/switch/gateways",
         icon: Network,
         roles: ["admin", "superuser"],
         permission: "gateways.view",
       },
       {
         name: "Bridge",
-        href: "/dashboard/freeswitch/bridge",
+        href: "/dashboard/switch/bridge",
         icon: Network,
         roles: ["admin", "superuser"],
         permission: "bridge.view",
       },
       {
         name: "Dialplans",
-        href: "/dashboard/freeswitch/dialplans",
+        href: "/dashboard/switch/dialplans",
         icon: FileText,
         roles: ["admin"],
         permission: "dialplans.view",
       },
       {
         name: "Console",
-        href: "/dashboard/freeswitch/console",
+        href: "/dashboard/switch/console",
         icon: Terminal,
         roles: ["admin"],
         permission: "console.view",
@@ -227,13 +249,6 @@ export const navigation: NavItem[] = [
     section: "system",
     roles: ["admin", "superuser"],
     submenu: [
-      {
-        name: "Tenants",
-        href: "/dashboard/system/tenants",
-        icon: SplitIcon,
-        roles: ["admin"],
-        permission: "tenants.view",
-      },
       {
         name: "Users",
         href: "/dashboard/system/users",
@@ -275,6 +290,30 @@ export const navigation: NavItem[] = [
         icon: FileText,
         roles: ["admin", "superuser"],
         permission: "logs.view",
+      },
+    ],
+  },
+
+  {
+    name: "Tenants",
+    icon: SplitIcon,
+    hasSubmenu: true,
+    section: "tenants",
+    roles: ["admin"],
+    submenu: [
+      {
+        name: "Tenants",
+        href: "/dashboard/tenants",
+        icon: SplitIcon,
+        roles: ["admin"],
+        permission: "tenants.view",
+      },
+      {
+        name: "Domains",
+        href: "/dashboard/tenants/domains",
+        icon: Globe,
+        roles: ["admin"],
+        permission: "domains.view",
       },
     ],
   },
