@@ -9,6 +9,7 @@ export default function Page() {
     const handleOnSuccess = async () => {
         try {
         const currentUser = await ternSecureAuth.currentUser
+        console.log('Current User:', currentUser)
 
         if(!currentUser) {
             throw new Error("No user found after signin")

@@ -6,7 +6,7 @@ export async function GET(
   {params}: { params: Promise<{ domainId: string }> }
 ) {
   try {
-    const domainId  = (await params).domainId;
+    const domainId  = (await params).domainId
     
     if (!domainId) {
       return NextResponse.json(
