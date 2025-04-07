@@ -18,7 +18,7 @@ export async function GET() {
   }
 }
 
-export async function PATCH(
+{/* export async function PATCH(
   request: Request,
   { params }: { params: { gatewayId: string } }
 ) {
@@ -62,4 +62,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-}
+} */}

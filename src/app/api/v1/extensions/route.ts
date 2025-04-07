@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PUT(
+{/* export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
   ) {
@@ -62,4 +62,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-}
+} */}
